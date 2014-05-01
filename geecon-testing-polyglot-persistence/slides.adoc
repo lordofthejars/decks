@@ -1,0 +1,104 @@
+= Testing Polyglot Persistence Done Right
+Bartosz Majsak <https://twitter.com/majson[@majson]>; Alex Soto <https://twitter.com/alexsotob[@alexsotob]>
+include::attributes.adoc[]
+
+== !
+
+"Testing with _mocks_ only proves you know how to write _mocks_."
+-- Dan Allen
+
+== !
+
+[.statement]
+{next-label} +
+Introduction
+
+include::introduction.adoc[]
+
+////
+
+Here we can introduce ourself, topics, questions about who uses nosql, arquillian, ....
+
+////
+
+== !
+
+[.statement]
+{next-label} +
+Challenges of Persistence Tests
+
+include::challenges-persistence-tests.adoc[]
+
+////
+Here we introduce the FIRST rules and how affect the Fast and the Isolated ones in persistence tests and how violating isolation rule is the most problematic
+////
+
+== !
+
+[.statement]
+{next-label} +
+Solutions
+
+include::solutions-persistence-tests.adoc[]
+
+////
+Here we introduce one possible solution is mocking but of course then you have another problem and is that you are not running real tests so at the end you still need to test against a db
+So a solution is using a clean-insert strategy, fast is resolved by inmemory db and isolated with dbunit and nosqlunit
+////
+
+[.topic.intro]
+== Testing *SQL* databases?
+
+include::testing-sql-dbs.adoc[]
+
+////
+Here we exaplin that sql has only a single point of connection (jdbc)
+And then an example of dbunit dataset and an example
+////
+
+[.topic.intro]
+== Testing *NoSQL* databases?
+
+include::testing-nosql-dbs.adoc[]
+
+////
+Explain that nosql systems are heterogenous so there is no single point of access and each engine implement their own.
+Means that each database supported by nosqlunit has its own dataset format (we put two or three quick examples)
+Nosqlunit can manage lifecycle of the database (embed, managed, remote)
+Example
+////
+
+[.topic.intro]
+== Bring *Tests* to runtime
+
+include::arquillian.adoc[]
+
+////
+But then introduce that in reality our life mostly happens within a container so we need to run tests inside a container, JPA configuration, transactions for SQL are managed by container. And for NoSQL EJB, CDI
+Then we explain Arquillian so people that don't use Arquillian (probably a lot for my past experience) knows what is Arquillian
+And finally the APE
+////
+
+[.topic.intro]
+== Conclusions 
+
+== !
+
+[.incremental]
+* Real tests increase *certainty*
+* Real tests build *confidence*
+* Real tests increase *robustness*
+* Long Live and Prosper to *tests*
+
+== !
+
+[{caption-off}, hrole="name"]
+.github.com/lordofthejars/bjugbank
+image::github.jpg[]
+
+[.topic.ending, hrole="name"]
+== Bartosz Majsak{nbsp}&middot;{nbsp}Alex Soto
+
+[.footer]
+[icon-twitter]'{zwsp}' @majson
+[icon-twitter]'{zwsp}' @alexsotob
