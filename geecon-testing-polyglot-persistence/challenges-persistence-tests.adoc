@@ -1,0 +1,27 @@
+
+[.topic]
+== FIRST Rules
+
+Fast:: $$Run more often$$
+Isolated:: $$Can be executed in any order$$
+Repeatable:: $$Always return the same result$$
+Self-Validating:: $$Know exactly their purpose$$
+Timely:: $$Run before code$$
+
+== !
+
+[.statement]
+Most *violated* rules in *Persistence* tests
+
+[.topic.source]
+== Fast
+
+[.incremental]
+* Net access
+* Heavy Startup
+* Huge amount of data
+
+[.topic.source]
+== Isolated
+
+include::snippets/PhoneTest.adoc[]

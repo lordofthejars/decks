@@ -1,0 +1,19 @@
+[source,java]
+.+PhoneTest.java+
+----
+
+@Inject
+PhoneService phoneService;
+
+@Test
+public void should_insert_phone() {
+	phoneService.save(new Phone());
+}
+
+@Test
+public void should_count_phones() {
+	int numberOfPhones = phoneService.count(); // <1>
+	assertThat(numberOfPhones, equalTo(??));
+}
+----
+<1> Depending on execution order the count query returns different number

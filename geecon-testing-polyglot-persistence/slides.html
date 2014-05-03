@@ -1,8 +1,25 @@
-<!DOCTYPE html><html lang="en" class="aspect-16-9"><head><meta charset="UTF-8"><meta name="generator" content="Asciidoctor 1.5.0.preview3, dzslides backend"><title>Testing Polyglot Persistence Done Right</title><meta name="author" content="Bartosz Majsak"><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton:400,700,800,400italic|Cedarville+Cursive"><link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css"><link rel="stylesheet" href="./dzslides/themes/highlight/asciidoctor.css"><link rel="stylesheet" href="./dzslides/themes/style/asciidoctor.css"><style>section:not(.topic) > h2 { display: none;}</style><link rel="stylesheet" href="./dzslides/core/dzslides.css"><link rel="stylesheet" href="./dzslides/themes/transition/fade.css"></head><body><section class="title"><h1>Testing Polyglot Persistence Done Right</h1><footer><span class="author">Bartosz Majsak</span> <span class="email"><a href="https://twitter.com/majson">@majson</a></span><span class="divider">&nbsp;&middot;&nbsp;</span><span class="author">Alex Soto</span> <span class="email"><a href="https://twitter.com/alexsotob">@alexsotob</a></span></footer></section><section><blockquote><p>Testing with <em>mocks</em> only proves you know how to write <em>mocks</em>.</p><br><cite>Dan Allen</cite></blockquote></section>
+<!DOCTYPE html><html lang="en" class="aspect-16-9"><head><meta charset="UTF-8"><meta name="generator" content="Asciidoctor 1.5.0.preview4, dzslides backend"><title>Testing Polyglot Persistence Done Right</title><meta name="author" content="Bartosz Majsak"><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton:400,700,800,400italic|Cedarville+Cursive"><link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css"><link rel="stylesheet" href="./dzslides/themes/highlight/asciidoctor.css"><link rel="stylesheet" href="./dzslides/themes/style/asciidoctor.css"><style>section:not(.topic) > h2 { display: none;}</style><link rel="stylesheet" href="./dzslides/core/dzslides.css"><link rel="stylesheet" href="./dzslides/themes/transition/fade.css"></head><body><section class="title"><h1>Testing Polyglot Persistence Done Right</h1><footer><span class="author">Bartosz Majsak</span> <span class="email"><a href="https://twitter.com/majson">@majson</a></span><span class="divider">&nbsp;&middot;&nbsp;</span><span class="author">Alex Soto</span> <span class="email"><a href="https://twitter.com/alexsotob">@alexsotob</a></span></footer></section><section><blockquote><p>Testing with <em>mocks</em> only proves you know how to write <em>mocks</em>.</p><br><cite>Dan Allen</cite></blockquote></section>
 <section><p class="statement"><strong>Next</strong> <em class="icon-caret-right">&#8203;</em><br>
 Introduction</p></section>
 <section><p class="statement"><strong>Next</strong> <em class="icon-caret-right">&#8203;</em><br>
 Challenges of Persistence Tests</p></section>
+<section class="topic"><h2>FIRST Rules:</h2><dl><dt>Fast</dt><dd>Run more often</dd><dt>Isolated</dt><dd>Can be executed in any order</dd><dt>Repeatable</dt><dd>Always return the same result</dd><dt>Self-Validating</dt><dd>$Know exactly their purpose$</dd><dt>Timely</dt><dd>Run before code</dd></dl></section>
+<section><p class="statement">Most <strong>violated</strong> rules in <strong>Persistence</strong> tests</p></section>
+<section class="topic source"><h2>Fast</h2><ul class="incremental"><li>Net access</li><li>Heavy Startup</li></ul></section>
+<section class="topic source"><h2>Isolated</h2><div class="listingblock"><div class="title"><code>PhoneTest.java</code></div><pre class="highlight"><code class="java">@Inject
+PhoneService phoneService;
+
+@Test
+public void should_insert_phone() {
+	phoneService.save(new Phone());
+}
+
+@Test
+public void should_count_phones() {
+	int numberOfPhones = phoneService.count(); <i class="conum" data-value="1"></i><b>(1)</b>
+	assertThat(numberOfPhones, equalTo(??));
+}</code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Depending on execution order the count query returns different number</td></tr></table></div></section>
 <section><p class="statement"><strong>Next</strong> <em class="icon-caret-right">&#8203;</em><br>
 Solutions</p></section>
 <section class="topic intro"><h2>Testing <strong>SQL</strong> databases?</h2></section>
