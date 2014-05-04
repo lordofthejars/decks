@@ -146,9 +146,9 @@ section.recap > h1,
 section.recap > h2 {
   margin: 0;
   text-transform: uppercase;
-  color: #005498;
+  color: #FFD300;
   font-size: 2em;
-  border: 15px solid #005498;
+  border: 15px solid #FFD300;
   border-radius: 20px;
   position: absolute;
   right: -25px;
@@ -506,13 +506,32 @@ blockquote cite:before {
 
 figcaption {
   font-size: 3em;
-  color: #000000;
+  /*color: #000000;*/
+  color: #611427;
   font-weight: 700;
   text-align: right;
   position: absolute;
-  bottom: 20px;
-  right: 35px;
+  bottom: .4em;
+  right: .6em;
   width: 100%;
+}
+
+figcaption.left {
+  right: 0;
+  left: .6em;
+  text-align: left;
+}
+
+figcaption.band {
+  /*color: #611427;*/
+  right: 0;
+  text-align: left;
+  background-color: rgba(255, 255, 255, .75);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+  padding-left: .5em;
+  line-height: 1.5em;
+  padding-bottom: .05em;
+  bottom: 1em;
 }
 
 /*
@@ -717,6 +736,11 @@ span.detail {
 
 .view .incremental * {
   opacity: 1 !important;
+}
+
+.reduced-x {
+  width: 40%;
+  height: auto;
 }
 
 /* The progressbar, at the bottom of the slides, show the global

@@ -11,7 +11,7 @@ Timely:: $$Run before code$$
 == !
 
 [.statement]
-Most *violated* rules in *Persistence* tests
+Most *violated* rules in *persistence* tests
 
 [.topic.source]
 == Fast
@@ -20,6 +20,13 @@ Most *violated* rules in *Persistence* tests
 * Net access
 * Heavy Startup
 * Huge amount of data
+
+[.topic.source]
+== Isolated
+
+[.incremental]
+* Databases are shared
+
 
 [.topic.source]
 == Isolated

@@ -1,0 +1,51 @@
+== !
+
+image::nosqlunit.png[role="pull-left reduced-x"]
+
+[.incremental.pull-right]
+* Manage Lifecycle
+* Maintain Database State
+* Polyglot Persistence
+* Spring Data Support
+
+== !
+
+[.statement]
+_Not_ single point of access
+
+[.topic]
+== Supported Engines
+
+[.scatter]
+* MongoDB
+* CouchDB
+* ElasticSearch
+* Neo4j
+* Redis
+* Infinispan
+* HBase
+* Cassandra
+
+== !
+
+Foto startStop
+
+== !
+
+Exemple
+
+== !
+
+Foto Seed
+
+== !
+
+Exemple
+
+== !
+
+Differents
+
+== !
+
+Que passa amb el container
