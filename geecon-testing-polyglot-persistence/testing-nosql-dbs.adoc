@@ -10,8 +10,9 @@ image::nosqlunit.png[role="pull-left reduced-x"]
 
 == !
 
-[.statement]
-_Not_ single point of access
+[{caption-off}, crole="band"]
+.Not single point of access
+image::plugin2.jpg[]
 
 [.topic]
 == Supported Engines
@@ -28,24 +29,63 @@ _Not_ single point of access
 
 == !
 
-Foto startStop
+[{caption-off}, crole="band"]
+.Starting/Stopping Databases
+image::startStop.png[]
+
+[.topic.source]
+== Manging MongoDB Lifecycle
+
+[source, java]
+----
+import static com.lordofthejars.nosqlunit.mongodb.ManagedMongoDb.MongoServerRuleBuilder.newManagedMongoDbRule;
+
+@ClassRule
+public static ManagedMongoDb managedMongoDb = newManagedMongoDbRule().mongodPath("/opt/mongo").build(); // <1>
+----
+<1> Starts a MongoDB instance installed on /opt/mongo
 
 == !
 
-Exemple
+[{caption-off}, crole="band"]
+.Seeding Database with Known Data
+image::seed.jpg[]
 
-== !
+[.topic.source]
+== Seeding to remote Redis
 
-Foto Seed
+[source, java]
+----
+@Rule
+public MongoDbRule remoteMongoDbRule = new MongoDbRule(mongoDb().databaseName("test").host("host").build());; // <1>
 
-== !
+@Test
+    @UsingDataSet(locations="initialData.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT) // <2>
+    @ShouldMatchDataSet(location="expectedData.json") // <3>
+    public void book_should_be_inserted_into_repository() {
+----
+<1> Establish a connection to given host
+<2> Clean the Redis instance and populate with given dataset.
+<3> After test expectations are run
 
-Exemple
+[.source.topic]
+== initialData.json
 
-== !
+[source, json]
+----
+{
+    "Book":
+    [
+        {"title":"The Hobbit","numberOfPages":293},
+        {"title":"The Lord Of The Rings","numberOfPages":1299}
+    ]
+}
+----
 
-Differents
+[.topic.recap]
+== Recap
 
-== !
-
-Que passa amb el container
+[.statement.incremental]
+* It is possible to test nosql database
+* Don't have to assume that database is started           
+* No standard way because of their nature

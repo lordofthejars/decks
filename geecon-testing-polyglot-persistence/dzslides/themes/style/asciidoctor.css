@@ -738,6 +738,11 @@ span.detail {
   opacity: 1 !important;
 }
 
+.morereduced-x {
+  width: 10%;
+  height: auto;
+}
+
 .reduced-x {
   width: 40%;
   height: auto;

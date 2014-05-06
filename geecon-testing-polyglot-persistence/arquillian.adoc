@@ -1,0 +1,65 @@
+== !
+
+[.statement]
+{next-label} +
+Origin of the *Problem*
+
+[.topic.source]
+== EntityManager injection
+
+[source, java]
+.SeriesWithPersistenceContext.java
+----
+@Stateless
+public class SeriesWithPersistenceContext {
+
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	public void createSerie(Serie serie) {
+		this.entityManager.persist(serie);
+	}
+}
+----
+
+== !
+
+[.incremental]
+* JPA configuration
+* Mapping
+* Transactions
+
+[.topic.source]
+== EJB for NoSQL
+
+[source, java]
+.PersonSessionBean.java
+----
+@Resource
+String host;
+
+@Resource
+int port;
+
+@PostConstruct
+private void initDB() {
+    try {                        
+        Mongo m = new Mongo(host, port);
+        DB db = m.getDB("personDB");
+        //...
+    } catch (UnknownHostException ex) {
+        getLogger(PersonSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
+----
+
+== !
+
+image::arquillian.png[role="pull-left morereduced-x"]
+
+[.incremental.pull-right]
+* Manage Lifecycle of Container
+* Create/Deploy MicroDeployments
+* Enriching Test Classes
+* Run Tests inside/against Container
+* IDE Friendly

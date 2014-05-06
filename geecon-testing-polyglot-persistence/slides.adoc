@@ -61,12 +61,10 @@ And then an example of dbunit dataset and an example
 
 include::testing-nosql-dbs.adoc[]
 
-////
-Explain that nosql systems are heterogenous so there is no single point of access and each engine implement their own.
-Means that each database supported by nosqlunit has its own dataset format (we put two or three quick examples)
-Nosqlunit can manage lifecycle of the database (embed, managed, remote)
-Example
-////
+== !
+
+[.middle.statement]
+but my *tests run* within a *container* 
 
 [.topic.intro]
 == Bring *Tests* to runtime
