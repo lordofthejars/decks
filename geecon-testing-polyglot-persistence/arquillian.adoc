@@ -61,5 +61,35 @@ image::arquillian.png[role="pull-left morereduced-x"]
 * Manage Lifecycle of Container
 * Create/Deploy MicroDeployments
 * Enriching Test Classes
-* Run Tests inside/against Container
+* Run Tests in/against Container
 * IDE Friendly
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::1_select_a_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::2_start_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::3_package_test_archive.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::4_run_test_in_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::5_test_result.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::6_disconnect_container.png[]
