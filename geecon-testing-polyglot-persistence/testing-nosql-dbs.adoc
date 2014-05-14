@@ -1,3 +1,17 @@
+== NoSQL
+
+image::trend.jpg[role="pull-left reduced-x"]
+
+[.incremental.pull-right]
+* Trending topic
+* Clustering from scratch
+* "Schemaless"
+* Polyglot
+
+== !
+
+image::recipe.jpg
+
 == !
 
 image::nosqlunit.png[role="pull-left reduced-x"]
@@ -52,21 +66,23 @@ public static ManagedMongoDb managedMongoDb = newManagedMongoDbRule().mongodPath
 image::seed.jpg[]
 
 [.topic.source]
-== Seeding to remote Redis
+== Recipe Example
 
 [source, java]
 ----
+@ClassRule
+public static final InMemoryMongoDb IN_MEMORY_MONGO_DB = newInMemoryMongoDbRule().build();
+
 @Rule
-public MongoDbRule remoteMongoDbRule = new MongoDbRule(mongoDb().databaseName("test").host("host").build());; // <1>
+public MongoDbRule remoteMongoDbRule = newMongoDbRule().defaultEmbeddedMongoDb(TEST_DB);
+    
+@Inject
+private Mongo mongo;
 
 @Test
-    @UsingDataSet(locations="initialData.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT) // <2>
-    @ShouldMatchDataSet(location="expectedData.json") // <3>
-    public void book_should_be_inserted_into_repository() {
+@UsingDataSet(locations="initialRecipes.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT)
+public void test() 
 ----
-<1> Establish a connection to given host
-<2> Clean the Redis instance and populate with given dataset.
-<3> After test expectations are run
 
 [.source.topic]
 == initialData.json
@@ -74,13 +90,21 @@ public MongoDbRule remoteMongoDbRule = new MongoDbRule(mongoDb().databaseName("t
 [source, json]
 ----
 {
-    "Book":
-    [
-        {"title":"The Hobbit","numberOfPages":293},
-        {"title":"The Lord Of The Rings","numberOfPages":1299}
-    ]
+	"recipes":
+			[
+				{ "beer_code" : "kölsch" , 
+				"ingredients" : { 
+					"malts" : [ "Pilsner  4,6kg" , "Wheat 800gr"] , 
+					"hops" : [ "Hallertau Hersbrucker Flor 50gr"] , 
+					"yeasts" : [ "Safale S-04"] , 
+					"fining_agents" : [ "Irish Moss 10gr"]
+				} , 
+				"elaboration" : "Typical English Beer. Original Density 1048 (5% Vol. Alc), .."}
+			]
 }
 ----
+
+== Neo4j
 
 [.topic.recap]
 == Recap
