@@ -1,0 +1,118 @@
+== !
+
+[.statement]
+{count-label}
+*1* Tests _Portables_
+
+== !
+
+[.statement]
+{count-label}
+*2* Ejecutables desde _IDE_ y desde _build tool_
+
+== !
+
+[.statement]
+{count-label}
+*3* _Reusar_ plataformas de testing existentes
+
+== !
+
+[.statement]
+{count-label}
+*4* _Flexbible_ para adaptarse a diferentes tecnologías
+
+== !
+
+[.statement]
+{count-label}
+*5* _Extendible_ para integrarse con nuevas plataformas
+
+== !
+
+[.statement]
+{count-label}
+*6* Facilitar el _despliegue_ de aplicaciones
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::1_select_a_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::2_start_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::3_package_test_archive.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::4_run_test_in_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::5_test_result.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::6_disconnect_container.png[]
+
+[.topic.intro]
+== Enseñame el código _!!!_
+
+[.topic.source]
+== Unit Test
+
+[source, java]
+.PaymentGatewayTest.java
+----
+
+public class PaymentGatewayTest {
+
+
+
+
+
+	PaymentGateway paymentGateway;
+
+	@Test
+	public void should_do_credit_card_payments() {
+		paymentGateway = new PaymentGateway();
+		paymentGateway.setPayment(new CreditCardPayment());
+		assertThat(paymentGateway.doPayment(...), is(...));
+	}
+
+}
+----
+
+[.topic.source]
+== Unit Test
+
+[source, java]
+.PaymentGatewayTest.java
+----
+@RunWith(Arquillian.class)
+public class PaymentGatewayTest {
+
+	@Deployment public static JavaArchive createDeployment() {
+		return Shrinkwrap.create(JavaArchive.class)
+			.addClasses(PaymentGateway.class,
+				CreditCardPayment.class, CreditCard.class);
+	}
+
+	@Inject PaymentGateway paymentGateway;
+
+	@Test
+	public void should_do_credit_card_payments() {
+		assertThat(paymentGateway.doPayment(...), is(...));
+	}
+
+}
+----

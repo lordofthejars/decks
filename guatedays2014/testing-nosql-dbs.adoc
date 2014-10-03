@@ -1,0 +1,115 @@
+== NoSQL
+
+image::trend.jpg[role="pull-left reduced-x"]
+
+[.incremental.pull-right]
+* Trending topic
+* Clustering from scratch
+* "Schemaless"
+* Polyglot
+
+== !
+
+image::recipe.jpg
+
+== !
+
+image::nosqlunit.png[role="pull-left reduced-x"]
+
+[.incremental.pull-right]
+* Manage Lifecycle
+* Maintain Database State
+* Polyglot Persistence
+* Spring Data Support
+
+== !
+
+[{caption-off}, crole="band"]
+.Not single point of access
+image::plugin2.jpg[]
+
+[.topic]
+== Supported Engines
+
+[.scatter]
+* MongoDB
+* CouchDB
+* ElasticSearch
+* Neo4j
+* Redis
+* Infinispan
+* HBase
+* Cassandra
+
+== !
+
+[{caption-off}, crole="band"]
+.Starting/Stopping Databases
+image::startStop.png[]
+
+[.topic.source]
+== Manging MongoDB Lifecycle
+
+[source, java]
+----
+import static com.lordofthejars.nosqlunit.mongodb.ManagedMongoDb.MongoServerRuleBuilder.newManagedMongoDbRule;
+
+@ClassRule
+public static ManagedMongoDb managedMongoDb = newManagedMongoDbRule().mongodPath("/opt/mongo").build(); // <1>
+----
+<1> Starts a MongoDB instance installed on /opt/mongo
+
+== !
+
+[{caption-off}, crole="band"]
+.Seeding Database with Known Data
+image::seed.jpg[]
+
+[.topic.source]
+== Recipe Example
+
+[source, java]
+----
+@ClassRule
+public static final InMemoryMongoDb IN_MEMORY_MONGO_DB = newInMemoryMongoDbRule().build();
+
+@Rule
+public MongoDbRule remoteMongoDbRule = newMongoDbRule().defaultEmbeddedMongoDb(TEST_DB);
+    
+@Inject
+private Mongo mongo;
+
+@Test
+@UsingDataSet(locations="initialRecipes.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT)
+public void test() 
+----
+
+[.source.topic]
+== initialData.json
+
+[source, json]
+----
+{
+	"recipes":
+			[
+				{ "beer_code" : "kölsch" , 
+				"ingredients" : { 
+					"malts" : [ "Pilsner  4,6kg" , "Wheat 800gr"] , 
+					"hops" : [ "Hallertau Hersbrucker Flor 50gr"] , 
+					"yeasts" : [ "Safale S-04"] , 
+					"fining_agents" : [ "Irish Moss 10gr"]
+				} , 
+				"elaboration" : "Typical English Beer. Original Density 1048 (5% Vol. Alc), .."}
+			]
+}
+----
+
+== Neo4j
+
+[.topic.recap]
+== Recap
+
+[.statement.incremental]
+* It is possible to test nosql database
+* Don't have to assume that database is started           
+* No standard way because of their nature
