@@ -1,0 +1,7 @@
+== !
+
+Persistence:: $$Evita código redundante en tests persistencia$$
+Drone/Graphene:: $$Test funcional$$
+Byteman:: $$Mock 2.0$$
+Droidum:: $$Aplicaciones Android$$
+Rest:: $$Evita código redundante en tests Rest$$

@@ -7,69 +7,30 @@ include::attributes.adoc[]
 [.canvas.relax-x.middle, {caption-off}]
 image::intro.png[]
 
-[.topic.intro]
-== Testing
+== !
+
+[.statement]
+{next-label} +
+Testing
 
 include::testing.adoc[]
-
-////
-
-Here we can introduce ourself, topics, questions about who uses nosql, arquillian, ....
-
-////
-
-[.topic.intro]
-== Principios de _Arquillian_
-
-include::arquillian.adoc[]
-
-////
-Here we introduce the FIRST rules and how affect the Fast and the Isolated ones in persistence tests and how violating isolation rule is the most problematic
-////
 
 == !
 
 [.statement]
 {next-label} +
-Solutions
-
-include::solutions-persistence-tests.adoc[]
-
-////
-Here we introduce one possible solution is mocking but of course then you have another problem and is that you are not running real tests so at the end you still need to test against a db
-So a solution is using a clean-insert strategy, fast is resolved by inmemory db and isolated with dbunit and nosqlunit
-////
-
-[.topic.intro]
-== Testing *SQL* databases?
-
-include::testing-sql-dbs.adoc[]
-
-////
-Here we exaplin that sql has only a single point of connection (jdbc)
-And then an example of dbunit dataset and an example
-////
-
-[.topic.intro]
-== Testing *NoSQL* databases?
-
-include::testing-nosql-dbs.adoc[]
-
-== !
-
-[.middle.statement]
-but my *tests run* within a *container*
-
-[.topic.intro]
-== Bring *Tests* to runtime
+Principios de _Arquillian_
 
 include::arquillian.adoc[]
 
-////
-But then introduce that in reality our life mostly happens within a container so we need to run tests inside a container, JPA configuration, transactions for SQL are managed by container. And for NoSQL EJB, CDI
-Then we explain Arquillian so people that don't use Arquillian (probably a lot for my past experience) knows what is Arquillian
-And finally the APE
-////
+== !
+
+[.statement]
+{next-label} +
+Extensiones Arquillian
+
+include::extensiones-arquillian.adoc[]
+
 
 [.topic.intro]
 == Conclusions
