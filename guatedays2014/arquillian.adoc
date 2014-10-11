@@ -213,8 +213,8 @@ ShrinkWrap.create(JavaArchive.class)
 ShrinkWrap.create(WebArchive.class)
     .addAsLibraries(x)
     .addAsWebInfResource(
-								new StringAsset("<faces-config version=\"2.0\"/>"),
-                	"faces-config.xml")
+                     new StringAsset("<faces-config version=\"2.0\"/>"),
+                         "faces-config.xml")
     .setWebXML(new File("src/test/resources/web.xml"));
 
 ShrinkWrap.create(EnterpriseArchive.class)

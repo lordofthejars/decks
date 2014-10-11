@@ -32,21 +32,30 @@ image::legobox.jpg[]
 
 == !
 
-[.canvas.relax-x.middle, {caption-off}]
+[{caption-off}, crole="band"]
+.Mi aplicación
 image::backtofuture.jpg[]
 
 == !
 
-[.canvas.relax-x.middle, {caption-off}]
-image::lego_tower.jpg[]
+[{caption-off}, crole="band"]
+.Mi aplicación al cabo del tiempo
+image::IMG_6378.jpeg[]
 
 == !
 
-[.canvas.relax-x.middle, {caption-off}]
+[{caption-off}, crole="band"]
+.Test unitario
 image::lego-head-pieces.jpg[]
 
+== !
+
+[{caption-off}, crole="band"]
+.Test integración
+image::garage.jpg[]
+
 [.topic.source]
-== Example of CDI
+== Ejemplo of CDI
 
 [source, java]
 .PaymentGateway.java

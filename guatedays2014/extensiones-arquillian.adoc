@@ -5,3 +5,351 @@ Drone/Graphene:: $$Test funcional$$
 Byteman:: $$Mock 2.0$$
 Droidum:: $$Aplicaciones Android$$
 Rest:: $$Evita código redundante en tests Rest$$
+Cucumber, Thucydides, Spock:: $$Arquillian con sabor a BDD$$
+
+[.topic.intro]
+== Arquillian _Persistence_
+
+[.topic]
+== Arquillian Persistence
+
+[.scatter.incremental]
+* Envolver cada test en una transacción
+* Popular set de datos
+* Mantener BDD en un estado conocido
+* Comparar el estado final de la BDD
+
+[.topic.source]
+== Old Way
+
+[source, java]
+----
+@Before
+public void preparePersistenceTest() {
+  clearDatabase();
+  insertData();
+  startTransaction();
+}
+private void clearDatabase() {
+  utx.begin();
+  em.joinTransaction();
+  em.createQuery("delete from Beer").executeUpdate();
+  utx.commit();
+}
+private void insertData() {
+  utx.begin();
+  em.joinTransaction();
+  Beer beer = BeerBuilder.create("Heineken").style("Pale Lager").build();
+  em.persist(beer);
+  utx.commit();
+}
+----
+
+[.topic.source]
+== APE dependency
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>org.jboss.arquillian.extension</groupId>
+  <artifactId>arquillian-persistence-dbunit</artifactId>
+  <version>${arquillian-persistence.version}</version>
+  <scope>test</scope>
+</dependency>
+----
+
+[.topic.source]
+== Dataset
+
+[source, yaml]
+beers.yaml
+----
+beer:
+  - id: 1
+    name: Heineken
+    style: Pale Lager
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.BeerTest.java
+----
+@EJB BeerService beerService;
+
+@Test
+@UsingDataSet("datasets/beers.yml")
+public void should_return_beer_by_type() throws Exception {
+    assertThat(beerService.findBeersByType("Pale Lager"), hasSize(1));
+}
+----
+
+[.topic.intro]
+== _DEMO_
+
+[.topic.intro]
+== Arquillian _Drone_/_Graphene_
+
+[.topic]
+== Arquillian Drone/Graphene
+
+[.scatter.incremental]
+* Test funcional aplicaciones web
+* Manejar ciclo vida del navegador
+* Uso de _Selenium WebDriver_
+* Soporte del patrón _Page_ y _AJAX_
+* Compatible con navegadores _Android_
+* Integración con _QUnit_
+
+[.topic.source]
+== Dependencia Drone/Graphene
+
+[source, xml]
+.pom.xml
+----
+<dependencyManagement>
+  <dependency>
+    <groupId>org.jboss.arquillian.extension</groupId>
+    <artifactId>arquillian-drone-bom</artifactId>
+    <version>${drone.version}</version>
+    <type>pom</type>
+    <scope>import</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.jboss.arquillian.selenium</groupId>
+    <artifactId>selenium-bom</artifactId>
+    <version>${selenium.bom.version}</version>
+    <type>pom</type>
+    <scope>import</scope>
+  </dependency>
+</dependencyManagement>
+----
+
+[.topic.source]
+== Dependencia Drone/Graphene
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>org.jboss.arquillian.extension</groupId>
+  <artifactId>arquillian-drone-webdriver-depchain</artifactId>
+  <type>pom</type>
+  <scope>test</scope>
+</dependency>
+
+<dependency>
+  <groupId>org.jboss.arquillian.graphene</groupId>
+  <artifactId>graphene-webdriver</artifactId>
+  <version>2.0.3.Final</version>
+  <scope>test</scope>
+  <type>pom</type>
+</dependency>
+----
+
+[.topic.source]
+== Configuración Arquillian
+
+[source, xml]
+.arquillian.xml
+----
+<arquillian>
+  <extension qualifier="webdriver">
+    <property name="browser">firefox</property>
+  </extension>
+</arquillian>
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.SessionsTest.java
+----
+  @Deployment(testable = false)
+  public static WebArchive createDeployment() {}
+
+  @ArquillianResource
+  URL contextPath;
+
+  @Drone
+  WebDriver driver;
+
+  @Test
+  public void should_show_all_sessions(@InitialPage ShowSessionPage showSessionPage) throws IOException {
+    showSessionPage.assertSessionsAreShown();
+  }
+----
+
+[.topic.source]
+== JSF
+
+[source, html]
+.view.xhtml
+----
+<div class="jumbotron">
+  <div id="welcomeMessage" class="content">
+    <h1>List of sessions registered on system</h1>
+  </div>
+</div>
+<div class="well well-sm">
+  <div class="panel panel-default">
+    <h:dataTable id="session" styleClass="table table-striped"
+          value="#{sessionService.sessions}" var="sessionConference">
+      <h:column>
+        <f:facet name="header">Title</f:facet>
+        <h:outputText styleClass="title" value="#{sessionConference.title}" />
+      </h:column>
+      <h:column>
+        <f:facet name="header">Start</f:facet>
+          #{sessionConference.startDate}
+      </h:column>
+    </h:dataTable>
+  </div>
+</div>
+----
+
+[.topic.source]
+== Page
+
+[source, java]
+.ShowSessionPage.java
+----
+@Location("view.xhtml")
+public class ShowSessionPage {
+
+    @FindBy
+    private WebElement welcomeMessage;
+
+    @FindBy
+    private WebElement session;
+
+    public void assertSessionsAreShown() {
+      assertThat(sessionTitles(), containsInAnyOrder("Devoxx", "JavaOne"));
+    }
+  }
+----
+
+[.topic.intro]
+== _DEMO_
+
+[.topic.intro]
+== Arquillian y _BDD_
+
+[.topic]
+== Cucumber, Thucydides y Spock
+
+[.incremental.scatter]
+* Usar _Behaviour-Driven Development_
+* Integración con Cucumber mediante _Cukes in Space_
+* Integración con Thucydides mediante reglas de _junit_
+* Integración con Spock mediante _Arquillian Sputnik_
+
+[.topic.source]
+== Cucumber Dependency
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>com.github.cukespace</groupId>
+  <artifactId>cukespace-core</artifactId>
+  <version>1.5.10</version>
+  <scope>test</scope>
+</dependency>
+----
+
+[.topic.source]
+== Cucumber feature
+
+[source, gherkin]
+.conferences-service.feature
+----
+Feature: Find Conferences
+  Scenario: Finding All Conferences
+
+    Given I have Devoxx conference
+    When I find all conferences in system
+    Then Devoxx should be listed
+----
+
+[.topic.source]
+== Cucumber
+
+[source, java]
+.ConferencesTest.java
+----
+@RunWith(CukeSpace.class)
+@Features(value = "org/superbiz/conferences-service.feature")
+public class ConferenceServiceFuntionalTest {
+
+  @Deployment public static JavaArchive deploy() { }
+
+  @EJB ConferenceService conferenceService;
+
+  @Given(value = "^I have (\\w+) conference$")
+  public void aConference(String conferenceName) {}
+
+  @When(value = "^I find all conferences in system$")
+  public void findAllConferences() {}
+
+  @Then(value = "^(\\w+) should be listed$")
+  public void shouldFindConferences(String conferenceName) {}
+}
+----
+
+[.topic.intro]
+== _DEMO_
+
+[.topic.source]
+== Arquillian Sputnik Dependencies
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>org.jboss.arquillian.spock</groupId>
+  <artifactId>arquillian-spock-container</artifactId>
+  <version>${project.version}</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.spockframework</groupId>
+  <artifactId>spock-core</artifactId>
+  <scope>test</scope>
+  <version>${version.spock}</version>
+</dependency>
+<dependency>
+  <groupId>org.codehaus.groovy</groupId>
+  <artifactId>groovy-all</artifactId>
+  <scope>test</scope>
+  <version>${version.groovy}</version>
+</dependency>
+----
+
+[.topic.source]
+== Arquillian Sputnik Test
+
+[source, groovy]
+.SecureServiceTest.groovy
+----
+@RunWith(ArquillianSputnik)
+class AccountServiceSpecification extends Specification {
+
+    @Deployment def static JavaArchive "create deployment"() {}
+
+    @Inject AccountService service
+
+    def "transfer should be possible between two accounts"() {
+        when:
+        service.transfer(from, to, amount)
+
+        then:
+        from.balance == fromBalance
+        to.balance == toBalance
+
+    }
+----

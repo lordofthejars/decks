@@ -31,32 +31,22 @@ Extensiones Arquillian
 
 include::extensiones-arquillian.adoc[]
 
-
-[.topic.intro]
-== Conclusions
-
 == !
 
-[.incremental]
-* Real tests increase *certainty*
-* Real tests build *confidence*
-* Real tests increase *robustness*
-* Long Live and Prosper to *tests*
+[.statement]
+{next-label} +
+Conclusiones
+
+include::conclusions.adoc[]
 
 == !
 
 [{caption-off}, hrole="name"]
-.github.com/lordofthejars/bjugbank
+.github.com/lordofthejars/decks
 image::github.jpg[]
-
-== !
-
-"Testing with _mocks_ only proves you know how to write _mocks_."
--- Dan Allen
 
 [.topic.ending, hrole="name"]
 == Alex Soto
 
 [.footer]
-[icon-twitter]'{zwsp}' @majson
-[icon-twitter]'{zwsp}' @alexsotob
+icon:twitter[] @alexsotob

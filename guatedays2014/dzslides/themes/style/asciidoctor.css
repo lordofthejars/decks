@@ -13,16 +13,16 @@
  .ending = Use on final slide, use h2 heading for message
  .statement = Use on a paragraph to make it a statement, vertically centered
  .middle = Use on any element to vertically center it
- 
+
  Color Palette:
 
  Name           Hex
  =====================
- Background ... #ffffff 
+ Background ... #ffffff
  Foreground ... #222222
  Primary ...... #005498
  Headings ..... #BA3925
- Muted ........ #6F6F6F 
+ Muted ........ #6F6F6F
  Shade ........ #1A6074
  Border ....... #DDDDDD
  ...
@@ -523,7 +523,7 @@ figcaption.left {
 }
 
 figcaption.band {
-  /*color: #611427;*/
+  color: #611427;
   right: 0;
   text-align: left;
   background-color: rgba(255, 255, 255, .75);
@@ -610,7 +610,7 @@ section pre code, section pre.literal {
   background: #F2F2F2;
   */
   border: 0 dotted #ccc;
-  border-width: 1px 0; 
+  border-width: 1px 0;
   background: transparent;
   white-space: pre-wrap;
 }
@@ -629,7 +629,7 @@ section pre.literal {
 .statement,
 section.intro > h1,
 section.intro > h2,
-section.recap > hgroup, 
+section.recap > hgroup,
 section.ending > h2,
 section > dl,
 section > ul.graffiti,
