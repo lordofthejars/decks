@@ -1,0 +1,1087 @@
+= *Java 8* meets Test
+Alex Soto <https://twitter.com/alexsotob[@alexsotob]>
+include::attributes.adoc[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::intro.png[]
+
+== !
+
+[{caption-off}]
+image::mou.jpg[]
+
+== !
+
+[{caption-off}, crole="band"]
+.Novedad
+image::new.jpg[]
+
+== !
+
+[{caption-off}, crole="band"]
+.Aprender
+image::new.jpg[]
+
+== !
+
+[.statement]
+{next-label} +
+Java 8
+
+[.topic]
+== Java 8
+
+[.scatter]
+* Lambdas
+* java.time
+* Functional interfaces
+* Streams
+* Type inference
+* Collections API
+* Parallelism
+* Utils
+
+== !
+
+[{caption-off}, crole="band"]
+.Optional
+image::optional.jpg[]
+
+[.topic]
+== Optional
+
+[.scatter]
+* Modelado explícito
+* Ayuda al desarrollador
+* `java.util.Optional<T>`
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+Conference conference = conferenceService.findConferenceByTitle("CodeMotion Madrid 2014"); //<1>
+
+assertThat(conference.getTitle(), is("CodeMotion Madrid 2014"));
+----
+<1> Entity Manager
+
+[.incremental]
+--
+[source, java]
+.Java8
+----
+Conference book = Optional.ofNullable(
+                    conferenceService.findConferenceByTitle("CodeMotion Madrid 2014")
+                  ).orElse(new Conference());
+assertThat(book.getTitle(), is("CodeMotion Madrid 2014"));
+----
+--
+
+== !
+
+[{caption-off}, crole="band"]
+.java.time
+image::time.jpg[]
+
+[.topic]
+== java.time
+
+[.scatter]
+* Expresar Fechas y Tiempos
+* Máquina vs Humanos
+* Fechas completas o parciales
+* _Fluent interface_
+* Immutables
+* `java.time`
+
+[.topic.source]
+== Date Time API
+
+[source, java]
+----
+LocalDate today = LocalDate.now(); //<1>
+LocalDate birthday = LocalDate.of(1960, Month.JANUARY, 1);
+
+boolean validLeapYear = Year.of(2012).isLeap();
+
+Instant timestamp = Instant.now(); //<2>
+
+Instant t1, t2;
+...
+long ns = Duration.between(t1, t2).toNanos(); //<3>
+
+LocalDate today = LocalDate.now();
+LocalDate birthday = LocalDate.of(1960, Month.JANUARY, 1);
+
+Period p = Period.between(birthday, today); //<4>
+----
+<1> Classes Date
+<2> Instante (similar a `Date`)
+<3> Duration tiempo máquina
+<4> Period tiempo humano
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+//La conferéncia es el 6/8/1996
+Conference codeMotion = conferenceService.findConferenceByTitle("CodeMotion Madrid 2014");
+
+//Early Bird es 10 dias antes
+Calendar earlyBirdLimitOld = codeMotion.getEarlyBirdLimitOld();
+assertThat(earlyBirdLimitOld.get(Calendar.YEAR), is(1996));
+assertThat(earlyBirdLimitOld.get(Calendar.MONTH), is(6)); //<1>
+assertThat(earlyBirdLimitOld.get(Calendar.DAY_OF_MONTH), is(27));
+----
+<1> Julio es el '`6`'
+
+[.incremental]
+--
+[source, java]
+.Java 8
+----
+LocalDate initialDate = LocalDate.of(1996, 8, 6);
+conference.setInitial(initialDate);
+conferenceService.createConference(conference);
+
+Conference codeMotion = conferenceService.findConferenceByTitle("CodeMotion Madrid 2014");
+
+LocalDate earlyBirdLimit = codeMotion.getEarlyBirdLimit();
+assertThat(earlyBirdLimit, is(LocalDate.of(1996, 8, 6).minusDays(10)));
+----
+
+--
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+//Duración de una session
+Session codeMotionSession = sessionService.findSessionByCode("CM1");
+
+assertThat(codeMotionSession.getDurationInSeconds(), is(2700L));
+----
+
+[.incremental]
+--
+[source, java]
+.Java 8
+----
+LocalDate date = LocalDate.of(2014, Month.OCTOBER, 22);
+LocalTime start = LocalTime.of(9, 45);
+LocalTime end = LocalTime.of(10, 30);
+
+Session session = new Session();
+session.setCode("CM1");
+session.setStartDate(ZonedDateTime.of(date, start, MADRID));
+session.setEndDate(ZonedDateTime.of(date, end, MADRID));
+
+sessionService.createSession(session);
+
+Session codeMotionSession = sessionService.findSessionByCode("CM1");
+
+Duration duration = Duration.ofMinutes(45);
+assertThat(codeMotionSession.getDuration(), is(duration));
+----
+
+--
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+CertificateUtil certificateUtil = new CertificateUtil();
+InputStream cerStream = ClassLoader.getSystemResourceAsStream("GeoTrust_Global_CA.cer");
+certificateUtil.load(cerStream);
+
+assertThat(certificateUtil.isExpired(), is(false)); //<1>
+----
+<1> Algun día el certificado estará caducado.
+
+[.incremental]
+--
+[source, java]
+.Java 8
+----
+CertificateUtil certificateUtil = new CertificateUtil((Clock.fixed(time, ZoneId.systemDefault())));
+
+InputStream cerStream = ClassLoader.getSystemResourceAsStream("GeoTrust_Global_CA.cer");
+certificateUtil.load(cerStream);
+
+//Instant.now devuelve siempre la misma fecha
+assertThat(certificateUtil.isExpired(), is(true));
+----
+--
+
+== !
+
+[{caption-off}, crole="band"]
+.Lambdas
+image::lambda.jpg[]
+
+[.topic]
+== Lambda
+
+[.scatter]
+* Funcionan en interficies _funcionales_
+* Sólo un método *abstracto*
+* No es necesario crear clases anónimas
+* `java.util.function`
+
+[.topic.source]
+== Lambdas
+
+[source, java]
+.Logger
+----
+public interface Logger {
+  void log(String level, String message);
+}
+----
+
+[.incremental]
+--
+[source, java]
+----
+Logger logger = new Logger() {
+  @Override
+  public void log(String level, String message) {
+    System.out.println(level + " : " + message);
+  }
+}
+----
+
+[source, java]
+----
+Logger logger = (String level, String message) -> {System.out.prinln(level, message)};
+----
+
+[source, java]
+----
+Logger logger = (level, message) -> System.out.prinln(level, message);
+----
+--
+
+[.topic.source]
+== Lambdas
+
+[source, java]
+.Logger
+----
+@FunctionalInterface //<1>
+public interface Logger {
+  void log(String level, String message);
+}
+----
+<1> Como `@Override` es simplemente documental
+
+== !
+
+[{caption-off}, crole="band"]
+.Streams
+image::streams.jpg[]
+
+[.topic]
+== Streams
+
+[.scatter]
+* Operaciones funcionales en datos
+* No es una estructura de datos
+* _Pipeline_ de ejecución
+* No tiene porqué tener fin
+* Listas, Ficheros, Buffered Streams
+* _Lazy_
+* Paralelismo !
+* _map-reduce_
+* `java.util.stream`
+
+[.topic.source]
+== Streams
+
+[source, java]
+----
+items.stream()
+              .filter(Predicate) //<1>
+              .map(Function)
+              .mapToInt(IntFunction)
+              .flatMap(Function)
+              .distinct()
+              .sorted()
+              .sorted(Comparator)
+              .peek(Consumer)
+              .limit(long)
+              .foreach(Consumer) //<2>
+----
+<1> Intermedias
+<2> Teminador
+
+[.incremental]
+--
+[source, java]
+----
+int sum = widgets.stream()
+                      .filter(w -> w.getColor() == RED)
+                      .mapToInt(w -> w.getWeight())
+                      .sum();
+----
+--
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+//Devuelve dos conferencias
+List<Conference> conferences = conferenceService.findConferencesByWebsite("www.codemotion.es");
+
+for (Conference conference : conferences) {
+  assertThat(conference.getWebsite(), is("www.codemotion.es"));
+}
+----
+
+[.incremental]
+--
+[source, java]
+----
+assertThat(conferences, containsInAnyOrder(conference1, conference2));
+----
+
+[source, java]
+----
+assertThat(conferences, hasSize(2));
+----
+--
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 8
+----
+List<Conference> conferences = conferenceService.findConferencesByWebsite("www.codemotion.es");
+
+Predicate<Conference> byWebsite =
+                c -> c.getWebsite().equals("www.codemotion.es");
+
+assertThat(conferences.stream().allMatch(byWebsite), is(true));
+//.allMatch(c -> c.getWebsite().equals("www.codemotion.es"))
+----
+
+[source, java]
+.Predicate.java
+----
+@FunctionalInterface
+public interface Predicate<T> {
+    boolean test(T t);
+}
+----
+
+[source, java]
+.Java 8
+----
+List<String> collect = conferences.stream()
+                        .map(c -> c.getWebsite())
+                        .distinct().collect(Collectors.toList());
+assertThat(collect, contains("www.codemotion.es"));
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+List<Conference> conferences = confService.findConferencesByWebsiteAndOlderAge("www.codemotion.es", 18);
+
+for (Conference conference : conferences) {
+  assertThat(conference.getWebsite(), is("www.codemotion.es"));
+  assertThat(conference.getMinimumAge(), greaterThanOrEqualTo(18));
+}
+----
+
+[source, java]
+----
+assertThat(conferences, containsInAnyOrder(conference1, conference2));
+----
+
+[source, java]
+----
+assertThat(conferences, hasSize(2));
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 8
+----
+List<Conference> conferences = confService.findConferencesByWebsiteAndOlderAge("www.codemotion.es", 18);
+
+Predicate<Conference> byWebsite = c -> c.getWebsite().equals("www.codemotion.es");
+Predicate<Conference> byAge = c -> c.getMinimumAge() >= 18;
+
+List<Conference> collect = conferences.stream().filter(byWebsite.and(byAge))
+                                               .collect(Collectors.toList());
+
+assertThat(collect, hasSize(2));
+----
+
+== !
+
+[{caption-off}, crole="band"]
+.Method References
+image::wolf-sheep.jpg[]
+
+[.topic]
+== Method References
+
+[.scatter]
+* Atajos para expresiones *lambda*
+* El compilador infiere la llamada por tipos
+* Aprovechar código existente
+* `java.util.function`
+
+[.topic.source]
+== Method References
+
+[source, java]
+.Conference.java
+----
+public class Conference {
+
+  public Conference(String name) {...}
+
+  public static Conference create(String conferenceName, Function<String, Conference> provider) {
+    return provider.apply(conferenceName);
+  }
+
+}
+----
+
+[source, java]
+.Function.java
+----
+public interface Function<T, R> {
+  R apply(T t);
+}
+----
+
+[.incremental]
+--
+[source, java]
+.Constructor
+----
+Conference c = Conference.create(Conference::new);
+----
+--
+
+[.topic.source]
+== Method References
+
+[source, java]
+.Conference.java
+----
+public class Conference {
+  public void follow(Conference anotherConference) { }
+}
+----
+
+[source, java]
+.Iterable.java
+----
+public interface Iterable {
+  default void forEach(Consumer<? super T> action) {}
+}
+----
+
+[source, java]
+.Consumer.java
+----
+public interface Consumer<T> {
+  void accept(T t);
+}
+----
+
+[.incremental]
+--
+[source, java]
+.Método
+----
+List<Conference> conferencesToFollow = ...;
+Conference codemotion = new Conference();
+
+//codemotion.accept(Conference s)
+conferencesToFollow.forEach(codemotion::follow);
+----
+--
+
+[.topic.source]
+== Method References
+
+[source, java]
+.Conference.java
+----
+public class Session {
+  public void finish() { }
+}
+----
+
+[source, java]
+.Iterable.java
+----
+public interface Iterable {
+  default void forEach(Consumer<? super T> action) {}
+}
+----
+
+[source, java]
+.Consumer.java
+----
+public interface Consumer<T> {
+  void accept(T t);
+}
+----
+
+[.incremental]
+--
+[source, java]
+.Método
+----
+List<Session> sessions = ...;
+
+//s.accept(Session s)
+//sessions.forEach(s -> s.finish());
+sessions.forEach(Session::finish);
+----
+--
+
+[.topic.source]
+== Test
+
+[source, java]
+.NotifierHandler.java
+----
+public interface Notifier {
+    void notify(Speaker user);
+}
+
+public class NotifierHandler {
+
+  @Inject @EMail Notifier emailNotifier;
+  @Inject @SMS Notifier smsNotifier;
+
+  public boolean notifyEmail(@Observes @EMail Session session /*more*/) {
+    try {
+      session.getSpeakers().stream()
+                           .filter(s -> s.getEmail() != null)
+                           .forEach(emailNotifier::notify);
+      return true;
+    } catch(Exception e) {
+      return false;
+    }
+  }
+
+  //...
+}
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+Notifier emailNotifier = Mockito.mock(Notifier); //<1>
+
+NotifierHandler notifierHandler = new NotifierHandler();
+notifierHandler.emailNotifier = emailNotifier;
+
+Person person1 = new Person();
+person1.setEmail("john@example.com");
+Person person2 = new Person();
+person2.setEmail(null);
+
+Session session = new Session();
+session.addSpeaker(person1);
+session.addSpeaker(person2);
+
+boolean result = notifierHandler.notifyEmail(session);
+
+assertThat(result, is(true));
+verify(emailNotifier).notify(person1);
+verify(emailNotifier, never()).notify(person2); //<2>
+----
+<1> O Stubbing
+<2> Verificación de todos los posibles casos
+
+[.topic.source]
+== Test
+
+[source, java]
+.Stubbing
+----
+notifierHandler.emailNotifier = new Notifier() {
+  public void notify(Speaker s) {
+    //<1>
+  }
+}
+----
+<1> Código de stub, puede llegar a ser muy complejo
+
+[.topic.source]
+== Test
+
+[source, java]
+.Notifier.java
+----
+public interface Notifier {
+  void notify(Speaker user);
+}
+----
+
+[source, java]
+.NotifierTestResponses.java
+----
+public class NotifierTestResponses {
+  public static void assertsEmailNotNull(Person p) {
+    assertThat(p.getEmail(), is(notNullValue()));
+  }
+}
+----
+
+[source, java]
+.Java 8
+----
+NotifierHandler notifierHandler = new NotifierHandler();
+notifierHandler.emailNotifier = NotifierTestResponses::assertsEmailNotNull;
+
+Session session = new Session();
+session.addSpeaker(person1);
+session.addSpeaker(person2);
+
+boolean result = notifierHandler.notifyEmail(session);
+assertThat(result, is(true));
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+Notifier emailNotifier = mock(Notifier); //<1>
+
+NotifierHandler notifierHandler = new NotifierHandler();
+notifierHandler.emailNotifier = emailNotifier;
+
+Session session = new Session();
+session.addSpeaker(person1);
+session.addSpeaker(person2);
+
+doThrow(IllegalArgumentException.class)
+  .when(emailNotifier)
+  .notify(any(Person.class)); //<2>
+
+boolean result = notifierHandler.notifyEmail(session);
+assertThat(result, is(false));
+----
+<1> O Stubbing
+<2> Repetido en todos los tests
+
+[.topic.source]
+== Test
+
+[source, java]
+.Notifier.java
+----
+public interface Notifier {
+  void notify(Speaker user);
+}
+----
+
+[source, java]
+.NotifierTestResponses.java
+----
+public class NotifierTestResponses {
+  public static void throwAnIllegalArgumentException(Person p) {
+    throw new IllegalArgumentException();
+  }
+}
+----
+
+[source, java]
+.Java 8
+----
+NotifierHandler notifierHandler = new NotifierHandler();
+notifierHandler.emailNotifier = NotifierTestResponses::throwAnIllegalArgumentException;
+
+Session session = new Session();
+session.addSpeaker(person1);
+session.addSpeaker(person2);
+
+boolean result = notifierHandler.notifyEmail(session);
+assertThat(result, is(false));
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 8
+----
+List<String> collect = conferences.stream()
+                                  .map(Conference::getWebsite)
+                                  .distinct()
+                                  .collect(Collectors.toList());
+----
+
+[{caption-off}, crole="band"]
+.Nashorn
+image::nashorn.jpg[]
+
+[.topic]
+== Nashorn
+
+[.scatter]
+* Reimplementación de *Rhino*
+* Más ligero
+* Proyecto *Avatar*
+* `javax.script`
+
+[.topic.source]
+== Test
+
+[source, javascript]
+.validations.js
+----
+var checkEmail = function(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*) /*and more */;
+    return re.test(email);
+}
+----
+
+[source, java]
+.Validation.java
+----
+public interface Validate {
+  boolean checkEmail(String email);
+}
+----
+
+[source, java]
+.Java 8
+----
+ScriptEngineManager engineManager = new ScriptEngineManager();
+ScriptEngine engine = engineManager.getEngineByName("nashorn");
+
+engine.eval(new FileReader("src/main/webapp/resources/js/validate.js"));
+Invocable invocable = (Invocable) engine;
+
+Validate validate = invocable.getInterface(Validate.class);
+assertThat(validate.checkEmail("a@a.es"), is(true));
+----
+
+== !
+
+[.statement]
+{next-label} +
+Más usos
+
+== !
+
+[{caption-off}, crole="band"]
+.Capturador de Excepciones
+image::captor.jpg[]
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+@Test(expected = PersistenceException.class)
+public void should_fail_if_same_conference_is_registered_twice() {
+  Conference conference1 = new Conference();
+  conference1.setTitle("CodeMotion Madrid 2014");
+  conference1.setWebsite("www.codemotion.es");
+  conference1.setMinimumAge(18);
+
+  Conference conference2 = new Conference();
+  conference2.setTitle("CodeMotion Madrid 2014");
+  conference2.setWebsite("www.codemotion.es");
+  conference2.setMinimumAge(18);
+
+  conferenceService.createConference(conference1);
+  conferenceService.createConference(conference2); //<1>
+
+  //<2>
+}
+----
+<1> ¿Quién lanzó la excepción?
+<2> No hay _assert_
+
+[.topic.source]
+== Test
+
+[source, java]
+.ThrowableCaptor.java
+----
+public class ThrowableCaptor {
+  public static <T> Throwable captureThrowable(Consumer<T> consumer, T el){
+    Throwable result = null;
+    try {
+      consumer.accept(el);
+    }catch(Exception e) {
+      result = e;
+    }
+    return result;
+  }
+}
+----
+
+[source, java]
+.Java 8
+----
+Conference conference1 = new Conference();
+conference1.setTitle("CodeMotion Madrid 2014");
+Conference conference2 = new Conference();
+conference2.setTitle("CodeMotion Madrid 2014");
+
+conferenceService.createConference(conference1);
+Throwable t = ThrowableCaptor.captureThrowable(conferenceService::createConference, conference2);
+assertThat(t, instanceOf(PersistenceException.class));
+----
+
+== !
+
+[{caption-off}, crole="band"]
+.Arquillian
+image::arquillian.jpg[]
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+private static JavaArchive mergeHibernate(JavaArchive javaArchive) {
+  JavaArchive[] javaArchives = Maven.resolver()
+                                .resolve("org.hibernate:hibernate-entitymanager:4.2.15.Final")
+                                .withTransitivity()
+                                .as(JavaArchive.class);
+
+  for(JavaArchive hibernateDep: javaArchives) {
+      javaArchive.merge(hibernateDep);
+  }
+  return javaArchive;
+}
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 8
+----
+private static JavaArchive mergeHibernate(JavaArchive javaArchive) {
+  JavaArchive[] javaArchives = Maven.resolver()
+                                .resolve("org.hibernate:hibernate-entitymanager:4.2.15.Final")
+                                .withTransitivity()
+                                .as(JavaArchive.class);
+
+  Arrays.stream(javaArchives).forEach(javaArchive::merge);
+
+  return javaArchive;
+}
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+ShrinkWrap.create(JavaArchive.class).addAsManifestResource(
+  new Assert() {
+      public InputStream openStream() {
+        new CheckedInputStream(urlInputStream, crc32);
+      }
+  },
+  "persistence.xml");
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 8
+----
+ShrinkWrap.create(JavaArchive.class)
+          .addAsManifestResource(
+            ()-> new CheckedInputStream(urlInputStream, crc32),
+          "persistence.xml");
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 7
+----
+WebArchive archive
+                .addClasses(Session.class, FixedSessionService.class)
+                .merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                                .importDirectory(WEBAPP_SRC).as(GenericArchive.class),
+                        "/", Filters.include(".*\\.js$"))
+                .merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                                .importDirectory(WEBAPP_SRC).as(GenericArchive.class),
+                        "/", Filters.include(".*\\.css$"))
+                .merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                                .importDirectory(WEBAPP_SRC).as(GenericArchive.class),
+                        "/", Filters.include(".*\\.xhtml"))
+
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/web.xml"))
+                .addAsWebInfResource(
+                        new StringAsset("<faces-config version=\"2.0\"/>"),
+                        "faces-config.xml");
+----
+
+[.topic.source]
+== Test
+
+[source, java]
+.Java 8
+----
+final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**.{xhtml,css,js}");
+
+WebArchive archive =
+                .addClasses(...)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsWebInfResource(new File(WEBAPP_SRC, "WEB-INF/web.xml"))
+                .addAsWebInfResource(
+                        new StringAsset("<faces-config version=\"2.0\"/>"),
+                        "faces-config.xml");
+
+Files.find(WEBAPP_SRC_PATH, Integer.MAX_VALUE,
+      (path, attr) -> matcher.matches(path))
+                  .forEach(
+                            p -> archive.addAsWebResource(p.toFile(),
+                                  WEBAPP_SRC_PATH.relativize(p).toString())
+);
+        return archive;
+----
+
+[.topic.source]
+== Test
+
+[source, xhtml]
+.view.xhtml
+----
+<h:dataTable id="session" styleClass="table table-striped"
+            value="#{sessionService.sessions}" var="sessionConference">
+  <h:column>
+    <f:facet name="header">Title</f:facet>
+    <h:outputText styleClass="title" value="#{sessionConference.title}" />
+  </h:column>
+  <h:column>
+    <f:facet name="header">Start</f:facet>
+    #{sessionConference.startDate}
+  </h:column>
+</h:dataTable>
+----
+
+[source, java]
+.Java 7
+----
+List<String> titles = new ArrayList<>();
+
+  List<WebElement> trElements = session.findElements(xpath("//table/tbody/tr/td/span[@class='title']"));
+
+  for (WebElement title : trElements) {
+    titles.add(title.getText());
+  }
+
+return titles;
+----
+
+[.topic.source]
+== Test
+
+[source, xhtml]
+.view.xhtml
+----
+<h:dataTable id="session" styleClass="table table-striped"
+            value="#{sessionService.sessions}" var="sessionConference">
+  <h:column>
+    <f:facet name="header">Title</f:facet>
+    <h:outputText styleClass="title" value="#{sessionConference.title}" />
+  </h:column>
+  <h:column>
+    <f:facet name="header">Start</f:facet>
+    #{sessionConference.startDate}
+  </h:column>
+</h:dataTable>
+----
+
+[source, java]
+.Java 8
+----
+List<WebElement> elements = session.findElements(xpath("//table/tbody/tr/td/span[@class='title']"));
+
+return elements.stream()
+               .map(WebElement::getText)
+               .collect(Collectors.toList());
+----
+
+== !
+
+[.statement]
+{next-label} +
+Estamos Terminando
+
+== !
+
+[{caption-off}, crole="band"]
+.Conclusiones
+image::conclusions.jpg[]
+
+[.topic]
+== Conclusiones
+
+[.scatter]
+* No nos volvemos locos
+* Mantengamos las cosas legibles
+* _IntelliJ_ vs _Eclipse_
+* Esto sólo es un tasteo
+
+== !
+
+[{caption-off}, crole="band"]
+.github.com/lordofthejars/decks
+image::github.jpg[]
+
+[.topic.ending, hrole="name"]
+== Alex Soto
+
+[.footer]
+icon:twitter[] @alexsotob
+
+[.topic]
+== Imagenes
+
+* Slide 18 - https://www.flickr.com/photos/luccast85
+* Slide 46 - http://img.movieboom.biz/movie/screen/415/18.jpg
+* Slide 57 - Mine
+* The rest Image Courtesy of Shutterstock

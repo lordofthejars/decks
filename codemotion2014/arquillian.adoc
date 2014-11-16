@@ -1,0 +1,267 @@
+== !
+
+[.statement]
+{count-label}
+*1* Tests _Portables_
+
+== !
+
+[.statement]
+{count-label}
+*2* Ejecutables desde _IDE_ y desde _build tool_
+
+== !
+
+[.statement]
+{count-label}
+*3* _Reusar_ plataformas de testing existentes
+
+== !
+
+[.statement]
+{count-label}
+*4* _Flexbible_ para adaptarse a diferentes tecnologías
+
+== !
+
+[.statement]
+{count-label}
+*5* _Extendible_ para integrarse con nuevas plataformas
+
+== !
+
+[.statement]
+{count-label}
+*6* Facilitar el _despliegue_ de aplicaciones
+
+[.topic.intro]
+== Enseñame el código _!!!_
+
+[.topic.source]
+== Unit Test
+
+[source, java]
+.PaymentGatewayTest.java
+----
+
+public class PaymentGatewayTest {
+
+
+
+
+
+	PaymentGateway paymentGateway;
+
+	@Test
+	public void should_do_credit_card_payments() {
+		paymentGateway = new PaymentGateway();
+		paymentGateway.setPayment(new CreditCardPayment());
+		assertThat(paymentGateway.doPayment(...), is(...));
+	}
+
+}
+----
+
+[.topic.source]
+== Arquillian Test
+
+[source, java]
+.PaymentGatewayTest.java
+----
+@RunWith(Arquillian.class)
+public class PaymentGatewayTest {
+
+	@Deployment public static JavaArchive createDeployment() {
+		return Shrinkwrap.create(JavaArchive.class)
+			.addClasses(PaymentGateway.class,
+				CreditCardPayment.class, CreditCard.class);
+	}
+
+	@Inject PaymentGateway paymentGateway;
+
+	@Test
+	public void should_do_credit_card_payments() {
+		assertThat(paymentGateway.doPayment(...), is(...));
+	}
+
+}
+----
+
+[.topic.intro]
+== Configuración de _Arquillian !!!_
+
+[.topic.source]
+== Maven (Gradle, Ant)
+
+[source, xml]
+.pom.xml
+----
+<dependencyManagement>
+    <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>1.1.5.Final</version>
+        <scope>import</scope>
+        <type>pom</type>
+    </dependency>
+</dependencyManagement>
+
+<dependency>
+    <groupId>org.jboss.arquillian.junit</groupId>
+    <artifactId>arquillian-junit-container</artifactId>
+    <scope>test</scope>
+</dependency>
+----
+
+[.topic.source]
+== Arquillian Test
+
+[source, java]
+.PaymentGatewayTest.java
+----
+@RunWith(Arquillian.class)
+public class PaymentGatewayTest {
+
+	@Deployment public static JavaArchive createDeployment() {
+		return Shrinkwrap.create(JavaArchive.class)
+			.addClasses(PaymentGateway.class,
+				CreditCardPayment.class, CreditCard.class);
+	}
+
+	@Inject PaymentGateway paymentGateway;
+
+	@Test
+	public void should_do_credit_card_payments() {
+		assertThat(paymentGateway.doPayment(...), is(...));
+	}
+
+}
+----
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::1_select_a_container.png[]
+
+[.topic.source]
+== Seleccionar Contenedor (Embedded Wildfly)
+
+[source, xml]
+.pom.xml
+----
+<profile>
+  <id>wildlfy-embedded</id>
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-arquillian-container-embedded</artifactId>
+      <version>8.1.0.Final</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</profile>
+----
+
+[.topic.source]
+== Seleccionar Contenedor (Embedded TomEE)
+
+[source, xml]
+.pom.xml
+----
+<profile>
+  <id>tomee-embedded</id>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>arquillian-tomee-embedded</artifactId>
+      <version>1.7.1</version>
+    </dependency>
+  </dependencies>
+</profile>
+----
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::2_start_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::3_package_test_archive.png[]
+
+[.topic]
+== Shrinkwrap
+
+image::shrinkwrap.png[role="pull-left"]
+
+[.incremental.pull-right]
+* API para crear ficheros
+* Crear _jar_, _war_ y _ear_
+* Resolver dependencias
+* Crear dependencias _JavaEE_
+
+[.topic.source]
+== ShrinkWrap
+
+[source, java]
+----
+ShrinkWrap.create(JavaArchive.class)
+    .addClasses(PaymentGateway.class)
+    .addPackages(CreditCardPayment.class.getPackage());
+
+ShrinkWrap.create(WebArchive.class)
+    .addAsLibraries(x)
+    .addAsWebInfResource(
+                     new StringAsset("<faces-config version=\"2.0\"/>"),
+                         "faces-config.xml")
+    .setWebXML(new File("src/test/resources/web.xml"));
+
+ShrinkWrap.create(EnterpriseArchive.class)
+    .addAsModules(war, jar);
+----
+
+[.topic.source]
+== ShrinkWrap (Resolver)
+
+[source, java]
+----
+File[] files = Maven.resolver()
+                    .resolve("G:A:V").withTransitivity()
+                    .asFile();
+----
+
+[.topic.source]
+== ShrinkWrap (Descriptor)
+
+[source, java]
+----
+Descriptors.create(WebAppDescriptor.class)
+    .metadataComplete(true)
+    .version("3.0")
+    .createServlet()
+        .servletName(EchoServlet.class.getSimpleName())
+        .servletClass(EchoServlet.class.getName()).up()
+    .createServletMapping()
+        .servletName(EchoServlet.class.getSimpleName())
+        .urlPattern(EchoServlet.URL_PATTERN).up()
+    .exportAsString()
+----
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::4_run_test_in_container.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::5_test_result.png[]
+
+== !
+
+[.relax-x.middle, {caption-off}]
+image::6_disconnect_container.png[]
+
+[.topic.intro]
+== _DEMO_

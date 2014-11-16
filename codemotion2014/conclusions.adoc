@@ -1,0 +1,20 @@
+== !
+
+[, Jeremy Norris]
+____
+The purpose of automated testing is to _enable change_.
+
+Verifying correctness is just a nice side-effect.
+____
+
+== !
+
+[, Dan Allen]
+____
+Testear con _mocks_ sólo demuestra que sabes como escribir _mocks_
+____
+
+== !
+
+[.statement]
+Escribe tests reales
