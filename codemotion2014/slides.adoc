@@ -10,12 +10,6 @@ image::intro.png[]
 == !
 
 [{caption-off}, crole="band"]
-.Novedad
-image::new.jpg[]
-
-== !
-
-[{caption-off}, crole="band"]
 .Aprender
 image::new.jpg[]
 
@@ -36,6 +30,7 @@ Java 8
 * Type inference
 * Collections API
 * Parallelism
+* Nashorn
 * Utils (*Base64*, *StringJoiner*)
 
 == !
@@ -69,10 +64,10 @@ assertThat(conference.getTitle(), is("CodeMotion"));
 [source, java]
 .Java8
 ----
-Conference book = Optional.ofNullable(
+Conference conference = Optional.ofNullable(
                     conferenceService.findConferenceByTitle("CodeMotion")
                   ).orElse(new Conference());
-assertThat(book.getTitle(), is("CodeMotion"));
+assertThat(conference.getTitle(), is("CodeMotion"));
 ----
 --
 
@@ -126,7 +121,7 @@ Period p = Period.between(birthday, today); //<4>
 Conference codeMotion = conferenceService.findConferenceByTitle("CodeMotion Madrid 2014");
 
 //Early Bird es 10 dias antes
-Calendar earlyBirdLimitOld = codeMotion.getEarlyBirdLimitOld();
+Calendar earlyBirdLimitOld = codeMotion.getEarlyBirdLimit();
 assertThat(earlyBirdLimitOld.get(Calendar.YEAR), is(1996));
 assertThat(earlyBirdLimitOld.get(Calendar.MONTH), is(6)); //<1>
 assertThat(earlyBirdLimitOld.get(Calendar.DAY_OF_MONTH), is(27));
@@ -733,52 +728,6 @@ List<String> collect = conferences.stream()
                                   .collect(Collectors.toList());
 ----
 
-[{caption-off}, crole="band"]
-.Nashorn
-image::nashorn.jpg[]
-
-[.topic]
-== Nashorn
-
-[.scatter]
-* Reimplementación de *Rhino*
-* Más ligero
-* Proyecto *Avatar*
-* `javax.script`
-
-[.topic.source]
-== Test
-
-[source, javascript]
-.validations.js
-----
-var checkEmail = function(email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*) /*and more */;
-    return re.test(email);
-}
-----
-
-[source, java]
-.Validation.java
-----
-public interface Validate {
-  boolean checkEmail(String email);
-}
-----
-
-[source, java]
-.Java 8
-----
-ScriptEngineManager engineManager = new ScriptEngineManager();
-ScriptEngine engine = engineManager.getEngineByName("nashorn");
-
-engine.eval(new FileReader("src/main/webapp/resources/js/validate.js"));
-Invocable invocable = (Invocable) engine;
-
-Validate validate = invocable.getInterface(Validate.class);
-assertThat(validate.checkEmail("a@a.es"), is(true));
-----
-
 == !
 
 [.statement]
@@ -1069,7 +1018,7 @@ icon:twitter[] @alexsotob
 [.topic]
 == Imagenes
 
-* Slide 17 - https://www.flickr.com/photos/luccast85
-* Slide 45 - http://img.movieboom.biz/movie/screen/415/18.jpg
-* Slide 56 - Mine
+* Slide 16 - https://www.flickr.com/photos/luccast85
+* Slide 44 - http://img.movieboom.biz/movie/screen/415/18.jpg
+* Slide 54 - Mine
 * The rest Image Courtesy of Shutterstock
