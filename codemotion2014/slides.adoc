@@ -9,11 +9,6 @@ image::intro.png[]
 
 == !
 
-[{caption-off}]
-image::mou.jpg[]
-
-== !
-
 [{caption-off}, crole="band"]
 .Novedad
 image::new.jpg[]
@@ -41,7 +36,7 @@ Java 8
 * Type inference
 * Collections API
 * Parallelism
-* Utils
+* Utils (*Base64*, *StringJoiner*)
 
 == !
 
@@ -63,9 +58,9 @@ image::optional.jpg[]
 [source, java]
 .Java 7
 ----
-Conference conference = conferenceService.findConferenceByTitle("CodeMotion Madrid 2014"); //<1>
+Conference conference = conferenceService.findConferenceByTitle("CodeMotion"); //<1>
 
-assertThat(conference.getTitle(), is("CodeMotion Madrid 2014"));
+assertThat(conference.getTitle(), is("CodeMotion"));
 ----
 <1> Entity Manager
 
@@ -75,9 +70,9 @@ assertThat(conference.getTitle(), is("CodeMotion Madrid 2014"));
 .Java8
 ----
 Conference book = Optional.ofNullable(
-                    conferenceService.findConferenceByTitle("CodeMotion Madrid 2014")
+                    conferenceService.findConferenceByTitle("CodeMotion")
                   ).orElse(new Conference());
-assertThat(book.getTitle(), is("CodeMotion Madrid 2014"));
+assertThat(book.getTitle(), is("CodeMotion"));
 ----
 --
 
@@ -114,15 +109,12 @@ Instant t1, t2;
 ...
 long ns = Duration.between(t1, t2).toNanos(); //<3>
 
-LocalDate today = LocalDate.now();
-LocalDate birthday = LocalDate.of(1960, Month.JANUARY, 1);
-
 Period p = Period.between(birthday, today); //<4>
 ----
 <1> Classes Date
-<2> Instante (similar a `Date`)
-<3> Duration tiempo máquina
-<4> Period tiempo humano
+<2> `Instante` (similar a `Date`)
+<3> `Duration` tiempo máquina
+<4> `Period` tiempo humano
 
 [.topic.source]
 == Test
@@ -146,16 +138,11 @@ assertThat(earlyBirdLimitOld.get(Calendar.DAY_OF_MONTH), is(27));
 [source, java]
 .Java 8
 ----
-LocalDate initialDate = LocalDate.of(1996, 8, 6);
-conference.setInitial(initialDate);
-conferenceService.createConference(conference);
-
 Conference codeMotion = conferenceService.findConferenceByTitle("CodeMotion Madrid 2014");
 
 LocalDate earlyBirdLimit = codeMotion.getEarlyBirdLimit();
 assertThat(earlyBirdLimit, is(LocalDate.of(1996, 8, 6).minusDays(10)));
 ----
-
 --
 
 [.topic.source]
@@ -1065,6 +1052,7 @@ image::conclusions.jpg[]
 * Mantengamos las cosas legibles
 * _IntelliJ_ vs _Eclipse_
 * Esto sólo es un tasteo
+* Lambdaj
 
 == !
 
@@ -1081,7 +1069,7 @@ icon:twitter[] @alexsotob
 [.topic]
 == Imagenes
 
-* Slide 18 - https://www.flickr.com/photos/luccast85
-* Slide 46 - http://img.movieboom.biz/movie/screen/415/18.jpg
-* Slide 57 - Mine
+* Slide 17 - https://www.flickr.com/photos/luccast85
+* Slide 45 - http://img.movieboom.biz/movie/screen/415/18.jpg
+* Slide 56 - Mine
 * The rest Image Courtesy of Shutterstock
