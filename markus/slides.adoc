@@ -1,0 +1,476 @@
+= Any resistance is _futile_, infrastructure _bugs_ will be _assimilated_
+Alex Soto <https://twitter.com/alexsotob[@alexsotob]>
+include::attributes.adoc[]
+
+////
+* What is Docker (logo)
+* What is a container (container obert) (package one runs everywhere, isolation, multitenant)
+* What uses Docker to Run (mar + cargo)
+* Difference with VM
+* Boot2Docker (logo)
+* Build (container)
+* Ship (carregant)
+* Run (helicopter)
+* Esquema general server
+* Arquillian monstre
+* What is Arquillian (alien) fills the gap, ...
+* Exemple CDI
+* Mock
+* Moves tests close to env in production (foto arbre)
+* Arquillian lifecycle
+* Arquillian features
+* Exemple
+* Arquillian Cube (star trek)
+* What is Cube (borg) move tests even close to prod
+* What it does (start stop, deploy relies on remote adapter, containerless, boot2docker)
+* Schema
+* Infrastructure (vaixell bolcat)
+* Demo
+* Conclusions
+The purpose of automated testing is to enable change.
+Verifying correctness is just a nice side-effect.
+
+Testear con mocks sólo demuestra que sabes como escribir mocks
+
+Dan Allen
+Jeremy Norris
+* Next Steps
+
+////
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::intro.png[]
+
+//709x857
+[.bannerleft]
+== ToC
+
+[ {caption-off}]
+image::toc.jpg[]
+
+* Docker and Boot2Docker
+* Arquillian
+* Demo
+* Arquillian Cube
+* Demo
+* Conclusions
+* Next Steps
+
+
+//1042x688
+[.imglandscape]
+== _Docker_
+
+[{caption-off}]
+image::docker.jpg[]
+
+
+[.icon]
+== What is _Docker_?
+
+[ {caption-off}]
+image::docker.png[]
+
+
+* {point-label} automates deployment in _software containers_
+* {point-label} OS level _virtualization_ on Linux
+* {point-label} uses `cgroups` `kernel namespaces`
+* {point-label} {heart-label} _REST_
+
+//709x857
+[.bannerleft]
+== Software _Containers_
+
+[ {caption-off}]
+image::container.jpg[]
+
+* {point-label} isolated user space instances
+* {point-label} processes, disk, network, userid, CPU
+* {point-label} standard deploy
+* {point-label} transport everywhere
+* {point-label} don't _care_ about content
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::dockervm.png[]
+
+[.icon]
+== _Boot2Docker_
+
+[ {caption-off}]
+image::boot2docker.png[]
+
+* {point-label} VirtualBox _Tiny Core Linux_
+* {point-label} Comes with _DockerHost_
+* {point-label} For _MacOS_ and _Windows_
+* {point-label} _Kitematic_ in MacOS
+
+//709x857
+[.bannerleft]
+== _Build_
+
+[ {caption-off}]
+image::containerstack.jpg[]
+
+* {point-label} Using `dockerfile` and calling `docker build .`
+* {point-label} `docker pull tomcat`
+
+[.source.topic]
+== TomEE Dockerfile
+
+[source]
+.dockerfile
+----
+FROM java:8-jre
+RUN groupadd -r tomee && useradd -r --create-home -g tomee tomee
+
+ENV PATH /usr/local/tomee/bin:$PATH
+RUN mkdir -p /usr/local/tomee
+RUN chown tomee:tomee /usr/local/tomee
+WORKDIR /usr/local/tomee
+USER tomee
+
+RUN curl -SL http://apache.rediris.es/tomee/tomee-1.7.1/apache-tomee-1.7.1-jaxrs.tar.gz -o tomee.tar.gz \
+  && tar -xvf tomee.tar.gz --strip-components=1 \
+  && rm bin/*.bat \
+  && rm tomee.tar.gz*
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+----
+
+//709x857
+[.bannerleft]
+== _Ship_
+
+[ {caption-off}]
+image::ship_container.jpg[]
+
+* {point-label} Shared using _registry_
+* {point-label} Public registry _Docker Hub_
+* {point-label} Private registries
+* {point-label} `docker push tomitribe/tomee`
+
+//709x857
+[.bannerleft]
+== _Run_
+
+[ {caption-off}]
+image::run_container.jpg[]
+
+* {point-label} `docker run -ti centos /bin/bash`
+* {point-label} `docker run tomitribe/tomee`
+
+[.topic]
+== Schema
+
+[.canvas.middle, {caption-off}]
+image::dockerworkflow.png[]
+
+//1042x688
+[.imglandscape]
+== _Arquillian_
+
+[{caption-off}]
+image::aq.jpg[]
+
+[.icon]
+== What is _Arquillian_?
+
+[ {caption-off}]
+image::arquillian.png[]
+
+* {point-label} _Test_ Framework for _JavaEE_
+* {point-label} Fills the _Gap_ automated Unit/Integration tests
+* {point-label} Child's game
+* {point-label} Functional/Security/IT Testing
+* {point-label} JavaEE and _beyond_
+* {point-label} _Open_ Source
+
+[.topic.source]
+== CDI Example
+
+[source, java]
+.PaymentGateway.java
+----
+@Inject
+@CreditCard
+Payment payment; // <1>
+----
+<1> CDI container injects the instance
+
+[source, java]
+.PaymentGatewayTest.java
+----
+PaymentGateway pg = new PaymentGateway();
+pg.setPayment(new CreditCardPayment()); // <1> <2>
+pg.doPayment(...);
+----
+<1> In test we are injecting manually the instance
+<2> Or a mocked instance
+
+[.topic.intro]
+== Would it work in production?
+
+[.imglandscape]
+== !
+
+[{caption-off}]
+image::ada.jpg[]
+
+//increase *certainty*
+//build *confidence*
+//increase *robustness*
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::1_select_a_container.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::2_start_container.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::3_package_test_archive.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::4_run_test_in_container.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::5_test_result.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::6_disconnect_container.png[]
+
+[.source.topic]
+== Add Arquillian
+
+[source]
+.pom.xml
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.arquillian</groupId>
+      <artifactId>arquillian-bom</artifactId>
+      <version>1.1.7.Final</version>
+      <scope>import</scope>
+      <type>pom</type> <!--1-->
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
+<1> Arquillian comes in `bom` format
+
+[.source.topic]
+== Choose Application Server
+
+[source]
+.pom.xml
+----
+<dependency>
+  <groupId>org.apache.openejb</groupId>
+  <artifactId>arquillian-tomee-embedded</artifactId> <!--1-->
+  <version>1.7.1</version>
+  <scope>test</scope>
+</dependency>
+----
+<1> Apache TomEE in embedded mode
+
+[.source.topic.code-small]
+== Write In-Container Test
+
+[source, java]
+.PaymentTest.java
+----
+@RunWith(Arquillian.class) //<1>
+public class PaymentTest {
+
+  @Deployment public static JavaArchive createDeployment() { //<2>
+    return ShrinkWrap.create(JavaArchive.class)
+            .addPackages(true, "org.superbiz")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+  }
+
+  @Inject PaymentGateway payment; //<3>
+
+  @Test
+  public void should_make_credit_card_transfers() {
+    Account a = new Account("a", 100);
+    Account b = new Account("b", 100);
+    payment.payUsingCreditCard(a, b, 50);
+  }
+}
+----
+<1> Arquillian Runner
+<2> Shrinkwrap creates deployable file programmatically
+<3> Test Enrichment
+
+[.source.topic.code-small]
+== Write As Client Test
+
+[source, java]
+.HelloWorldServletTest.java
+----
+@RunWith(Arquillian.class)
+public class HelloWorldServletTest {
+
+  @Deployment(testable=false) //<1>
+  public static WebArchive create() {
+      return ShrinkWrap.create(WebArchive.class, "hello.war")
+      .addClass(HelloWorldServlet.class);
+  }
+
+  @Test
+  public void readContent(@ArquillianResource URL base) throws IOException { //<2>
+    URL url = new URL(base, "HelloWorld"); //<3>
+    String response = readResponse(url);
+    assertThat(response, is("..."));
+    }
+  }
+----
+<1> Sets test as `RunInClient` mode
+<2> Gets context _URL_ with `@ArquillianResource`
+<3> Opens a connection
+
+[.topic.intro]
+== *Demo* time
+
+[.icon]
+== Principles of _Arquillian_?
+
+[ {caption-off}]
+image::principles.png[]
+
+* {point-label} _portable_ tests
+* {point-label} executable from _IDE_ and the _buildtool_
+* {point-label} _reuse_ existing frameworks
+* {point-label} _flexible_ to adapt technologies
+* {point-label} _extensible_ to new platforms
+* {point-label} ease of _deployment_ (uDeployments)
+
+//1042x688
+[.imglandscape]
+== _Arquillian Cube_
+
+[{caption-off}]
+image::BorgFirstContact.jpg[]
+
+//709x857
+[.bannerleft]
+== What is _Arquillian Cube_
+
+[ {caption-off}]
+image::LocutusOfBorg.jpg[]
+
+* {point-label} manages lifecycle of _docker_ containers
+* {point-label} uses _Arquillian_ remote adapters
+* {point-label} orchestrate containers
+* {point-label} containerless (Netty, NodeJs, Spring Boot)
+* {point-label} ready for _boot2docker_
+
+[.topic]
+== Schema
+
+[.canvas.middle, {caption-off}]
+image::dockerworkflow.png[]
+
+[.source.topic.code-small]
+== Write As Client Test
+
+[source, java]
+.HelloWorldServletTest.java
+----
+@RunWith(Arquillian.class)
+public class HelloWorldServletTest {
+
+  @Deployment(testable=false) //<1>
+  public static WebArchive create() {
+      return ShrinkWrap.create(WebArchive.class, "hello.war")
+      .addClass(HelloWorldServlet.class);
+  }
+
+  @Test
+  public void readContent(@ArquillianResource URL base) throws IOException { //<2>
+    URL url = new URL(base, "HelloWorld"); //<3>
+    String response = readResponse(url);
+    assertThat(response, is("..."));
+    }
+  }
+----
+
+[.source.topic]
+== Add Arquillian Cube
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>org.arquillian.cube</groupId>
+  <artifactId>arquillian-cube-docker</artifactId> <!--1-->
+  <version>${project.version}</version>
+  <scope>test</scope>
+</dependency>
+
+<dependency>
+  <groupId>org.jboss.arquillian.container</groupId>
+  <artifactId>arquillian-tomcat-remote-7</artifactId> <!--2-->
+  <version>1.0.0.CR7</version>
+  <scope>test</scope>
+</dependency>
+----
+<1> Adds Arquillian Cube dependency
+<2> Adds Tomcat remote adapter
+
+[.source.topic.code-small]
+== arquillian.xml
+
+[source, xml]
+.src/test/resources/arquillian.xml
+----
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ....>
+  <extension qualifier="docker">
+    <property name="serverVersion">1.14</property>
+    <property name="dockerContainers"> <!--1-->
+        tomcat:
+          image: tutum/tomcat:7.0
+          env: [TOMCAT_PASS=pass,JAVA_OPTS=-Djava.rmi.server.hostname=dockerServerIp] <!--2-->
+          portBindings: [8089/tcp, 8088/tcp, 8081->8080/tcp] <!--3-->
+    </property>
+    <container qualifier="tomcat"> <!--4-->
+      <configuration>
+        <property name="user">admin</property>
+        <property name="pass">pass</property>
+      </configuration>
+    </container>
+</arquillian>
+----
+<1> Orchestration part
+<2> `dockerServerIp` is resolved automatically https://docs.jboss.org/author/display/ARQ/Tomcat+7.0+-+Remote
+<3> Automatic Exposing Port binding
+<4> `qualifier` should be the same `dockerContainers`
+
+== !
+
+[{caption-off}, hrole="name"]
+.github.com/lordofthejars/decks
+image::github.jpg[]
+
+[.topic.ending, hrole="name"]
+== Alex Soto
+
+[.footer]
+icon:twitter[] @alexsotob
