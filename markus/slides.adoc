@@ -55,7 +55,6 @@ image::toc.jpg[]
 * Demo
 * Arquillian Cube
 * Demo
-* Conclusions
 * Next Steps
 
 
@@ -382,11 +381,16 @@ image::LocutusOfBorg.jpg[]
 * {point-label} containerless (Netty, NodeJs, Spring Boot)
 * {point-label} ready for _boot2docker_
 
-[.topic]
-== Schema
+//709x857
+[.bannerleft]
+== Let's _ship_ first bug
 
-[.canvas.middle, {caption-off}]
-image::dockerworkflow.png[]
+[ {caption-off}]
+image::ship_transport.jpg[]
+
+* {point-label} Tomcat (`HelloWorldServlet`)
+* {point-label} `tutum/tomcat:7.0` image
+* {point-label} Run As Client
 
 [.source.topic.code-small]
 == Write As Client Test
@@ -411,6 +415,9 @@ public class HelloWorldServletTest {
     }
   }
 ----
+<1> Sets test as `RunInClient` mode
+<2> _URL_ resolved to docker host and port
+<3> Opens a connection
 
 [.source.topic]
 == Add Arquillian Cube
@@ -458,10 +465,201 @@ public class HelloWorldServletTest {
     </container>
 </arquillian>
 ----
-<1> Orchestration part
+<1> Orchestration part not requires _DockerHost_ IP
 <2> `dockerServerIp` is resolved automatically https://docs.jboss.org/author/display/ARQ/Tomcat+7.0+-+Remote
 <3> Automatic Exposing Port binding
 <4> `qualifier` should be the same `dockerContainers`
+
+
+[.topic.intro]
+== *Demo* time
+
+//709x857
+[.bannerleft]
+== Orchestration tests
+
+[ {caption-off}]
+image::multiple_containers.jpg[]
+
+* {point-label} Wildfly + Database (`H2`)
+* {point-label} self-created Wildfly image
+* {point-label} `zhilvis/h2-db` image
+* {point-label} In-Container Test
+
+[.source.topic.code-small]
+== arquillian.xml
+
+[source, xml]
+.arquillian.xml
+----
+<property name="autoStartContainers">database</property> <!--1-->
+<property name="dockerContainers">
+    wildfly:
+      buildImage:
+        dockerfileLocation: src/test/resources/wildfly
+        noCache: true
+        remove: true
+      exposedPorts: [8080/tcp, 9990/tcp]
+      portBindings: [8081->8080/tcp, 9991->9990/tcp]
+    wildfly_database:
+      extends: wildfly <!--2-->
+      links:
+        - database:database <!--3-->
+    database:
+      image: zhilvis/h2-db
+      exposedPorts: [81/tcp, 1521/tcp]
+      portBindings: [1521/tcp, 8181->81/tcp]
+</property>
+----
+<1> List of _docker_ containers to start before _App. Server_
+<2> _extends_ is support to extending _docker_ definitions
+<3> _link_ to another container. Related to _docker_ linking
+
+
+//709x857
+[.bannerleft]
+== Containerless
+
+[ {caption-off}]
+image::emptycontainer.jpg[]
+
+* {point-label} any application that runs on _Docker_
+* {point-label} `undertow` Java runnable application
+* {point-label} functional tests
+
+[.source.topic.code-small]
+== DaytimeServer
+
+[source, java]
+.DaytimeServer
+----
+public class DaytimeServer {
+
+  public static void main(String[] args) { //<1>
+
+    Undertow server = Undertow.builder()
+      .addHttpListener(8080, "0.0.0.0")
+      .setHandler(new HttpHandler() {
+        @Override
+        public void handleRequest(final HttpServerExchange exchange) throws Exception {
+          SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+          exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+          exchange.getResponseSender()
+                  .send(simpleDateFormat.format(new Date()) + System.lineSeparator());
+        }
+      }).build();
+    server.start(); //<2>
+  }
+}
+----
+<1> It is a CLI Java application
+<2> Server is started embedded in application
+
+[.source.topic.code-small]
+== test
+
+[source, java]
+----
+  @Deployment(testable = false)
+  public static JavaArchive createDeployment() {
+      JavaArchive[] undertow = Maven.resolver()
+                                    .resolve("io.undertow:undertow-core:1.1.1.Final")
+                                    .withTransitivity().as(JavaArchive.class); //<1>
+
+      JavaArchive jar = ShrinkWrap
+              .create(JavaArchive.class, "daytime.jar")
+              .addClass(DaytimeServer.class); //<2>
+      merge(jar, undertow);
+
+      jar.addAsManifestResource(
+              new StringAsset(
+                      "Main-Class: org.arquillian.cube.impl.containerless.DaytimeServer"
+                              + LINE_SEPARATOR), "MANIFEST.MF");//<3>
+      return jar;
+  }
+
+  @Test
+  public void shouldReturnDateFromDaytimeServer(@ArquillianResource URL base) {}
+----
+<1> resolves `undertow` dependencies
+<2> creates jar file with name `daytime.jar`
+<3> adds manifest for runnable jar
+
+[.source.topic]
+== pom
+
+[source, xml]
+.pom.xml
+----
+<dependency>
+  <groupId>org.arquillian.cube</groupId>
+  <artifactId>arquillian-cube-containerless</artifactId>
+  <version>${arquillian.cube.version}</version>
+</dependency>
+----
+
+[.source.topic.code-small]
+== dockerfile template
+
+[source, yaml]
+.src/test/resources/undertow/DockerfileTemplate
+----
+FROM java:7
+
+WORKDIR /usr/src/server
+COPY ${deployableFilename} /usr/src/server/${deployableFilename} #<1>
+EXPOSE 8080
+CMD ["java", "-jar", "${deployableFilename}"]
+----
+<1> deployableFilename will be replaced at runtime jar file created by Shrinkwrap.
+
+[.source.topic.code-small]
+== arquillian.xml
+
+[source, xml]
+.src/test/resources/arquillian.xml
+----
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ...>
+  <extension qualifier="docker">
+    <property name="serverVersion">1.12</property>
+    <property name="dockerContainers">
+      daytime:
+        buildImage:
+          dockerfileLocation: src/test/resources/undertow <!--1-->
+          noCache: true
+          remove: true
+        portBindings: [8080/tcp]
+    </property>
+  </extension>
+  <container qualifier="containerless" default="true"> <!--2-->
+    <configuration>
+        <property name="containerlessDocker">daytime</property> <!--3-->
+        <property name="embeddedPort">8080</property>
+    </configuration>
+  </container>
+</arquillian>
+----
+<1> Sets the location of `dockerfileTemplate` file
+<2> Adds containerless adapter
+<3> Sets name of _docker_ container to start
+
+//709x857
+[.bannerleft]
+== Infrastructure Tests
+
+[ {caption-off}]
+image::disaster.jpg[]
+
+* {point-label} run infrastructure tests
+* {point-label} polyglot microservices covered too
+* {point-label} avoid production surprises
+
+//1042x688
+[.imglandscape]
+== _What's next_
+
+[{caption-off}]
+image::alexandra.jpg[]
 
 == !
 
@@ -471,6 +669,5 @@ image::github.jpg[]
 
 [.topic.ending, hrole="name"]
 == Alex Soto
-
 [.footer]
 icon:twitter[] @alexsotob

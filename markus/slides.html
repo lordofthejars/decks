@@ -1432,7 +1432,7 @@ right: 20px;
 }
 </style></head><body><section class="title"><h1>Any resistance is <em>futile</em>, infrastructure <em>bugs</em> will be <em>assimilated</em></h1><footer><span class="author">Alex Soto</span> <span class="email"><a href="https://twitter.com/alexsotob">@alexsotob</a></span></footer></section><section><figure><img class="canvas relax-x middle" src="./images/intro.png" alt="intro"><figcaption></figcaption></figure></section>
 <section class="bannerleft"><h2>ToC</h2><figure><img src="./images/toc.jpg" alt="toc"><figcaption></figcaption></figure>
-<ul><li>Docker and Boot2Docker</li><li>Arquillian</li><li>Demo</li><li>Arquillian Cube</li><li>Demo</li><li>Conclusions</li><li>Next Steps</li></ul></section>
+<ul><li>Docker and Boot2Docker</li><li>Arquillian</li><li>Demo</li><li>Arquillian Cube</li><li>Demo</li><li>Next Steps</li></ul></section>
 <section class="imglandscape"><h2><em>Docker</em></h2><figure><img src="./images/docker.jpg" alt="docker"><figcaption></figcaption></figure></section>
 <section class="icon"><h2>What is <em>Docker</em>?</h2><figure><img src="./images/docker.png" alt="docker"><figcaption></figcaption></figure>
 <ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> automates deployment in <em>software containers</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> OS level <em>virtualization</em> on Linux</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> uses <code>cgroups</code> <code>kernel namespaces</code></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span>  <span class="icon"><i class="fa fa-heart"></i></span> <em>REST</em></li></ul></section>
@@ -1544,7 +1544,8 @@ pg.doPayment(...);</code></pre></div>
 <section class="imglandscape"><h2><em>Arquillian Cube</em></h2><figure><img src="./images/BorgFirstContact.jpg" alt="BorgFirstContact"><figcaption></figcaption></figure></section>
 <section class="bannerleft"><h2>What is <em>Arquillian Cube</em></h2><figure><img src="./images/LocutusOfBorg.jpg" alt="LocutusOfBorg"><figcaption></figcaption></figure>
 <ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> manages lifecycle of <em>docker</em> containers</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> uses <em>Arquillian</em> remote adapters</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> orchestrate containers</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> containerless (Netty, NodeJs, Spring Boot)</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> ready for <em>boot2docker</em></li></ul></section>
-<section class="topic"><h2>Schema</h2><figure><img class="canvas middle" src="./images/dockerworkflow.png" alt="dockerworkflow"><figcaption></figcaption></figure></section>
+<section class="bannerleft"><h2>Let&#8217;s <em>ship</em> first bug</h2><figure><img src="./images/ship_transport.jpg" alt="ship transport"><figcaption></figcaption></figure>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Tomcat (<code>HelloWorldServlet</code>)</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <code>tutum/tomcat:7.0</code> image</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Run As Client</li></ul></section>
 <section class="source topic code-small"><h2>Write As Client Test</h2><div class="listingblock"><div class="title">HelloWorldServletTest.java</div><pre class="highlight CodeRay"><code class="java"><span class="annotation">@RunWith</span>(Arquillian.class)
 <span class="directive">public</span> <span class="type">class</span> <span class="class">HelloWorldServletTest</span> {
 
@@ -1560,7 +1561,8 @@ pg.doPayment(...);</code></pre></div>
     <span class="predefined-type">String</span> response = readResponse(url);
     assertThat(response, is(<span class="string"><span class="delimiter">&quot;</span><span class="content">...</span><span class="delimiter">&quot;</span></span>));
     }
-  }</code></pre></div></section>
+  }</code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Sets test as <code>RunInClient</code> mode</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><em>URL</em> resolved to docker host and port</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Opens a connection</td></tr></table></div></section>
 <section class="source topic"><h2>Add Arquillian Cube</h2><div class="listingblock"><div class="title">pom.xml</div><pre class="highlight CodeRay"><code class="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.arquillian.cube<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>arquillian-cube-docker<span class="tag">&lt;/artifactId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1591,7 +1593,106 @@ pg.doPayment(...);</code></pre></div>
       <span class="tag">&lt;/configuration&gt;</span>
     <span class="tag">&lt;/container&gt;</span>
 <span class="tag">&lt;/arquillian&gt;</span></code></pre></div>
-<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Orchestration part</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><code>dockerServerIp</code> is resolved automatically <a href="https://docs.jboss.org/author/display/ARQ/Tomcat+7.0+-+Remote" class="bare">https://docs.jboss.org/author/display/ARQ/Tomcat+7.0+-+Remote</a></td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Automatic Exposing Port binding</td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td><code>qualifier</code> should be the same <code>dockerContainers</code></td></tr></table></div></section>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Orchestration part not requires <em>DockerHost</em> IP</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><code>dockerServerIp</code> is resolved automatically <a href="https://docs.jboss.org/author/display/ARQ/Tomcat+7.0+-+Remote" class="bare">https://docs.jboss.org/author/display/ARQ/Tomcat+7.0+-+Remote</a></td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Automatic Exposing Port binding</td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td><code>qualifier</code> should be the same <code>dockerContainers</code></td></tr></table></div></section>
+<section class="topic intro"><h2><strong>Demo</strong> time</h2></section>
+<section class="bannerleft"><h2>Orchestration tests</h2><figure><img src="./images/multiple_containers.jpg" alt="multiple containers"><figcaption></figcaption></figure>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Wildfly + Database (<code>H2</code>)</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> self-created Wildfly image</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <code>zhilvis/h2-db</code> image</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> In-Container Test</li></ul></section>
+<section class="source topic code-small"><h2>arquillian.xml</h2><div class="listingblock"><div class="title">arquillian.xml</div><pre class="highlight CodeRay"><code class="xml"><span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">autoStartContainers</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>database<span class="tag">&lt;/property&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dockerContainers</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    wildfly:
+      buildImage:
+        dockerfileLocation: src/test/resources/wildfly
+        noCache: true
+        remove: true
+      exposedPorts: [8080/tcp, 9990/tcp]
+      portBindings: [8081-<span class="error">&gt;</span>8080/tcp, 9991-<span class="error">&gt;</span>9990/tcp]
+    wildfly_database:
+      extends: wildfly <i class="conum" data-value="2"></i><b>(2)</b>
+      links:
+        - database:database <i class="conum" data-value="3"></i><b>(3)</b>
+    database:
+      image: zhilvis/h2-db
+      exposedPorts: [81/tcp, 1521/tcp]
+      portBindings: [1521/tcp, 8181-<span class="error">&gt;</span>81/tcp]
+<span class="tag">&lt;/property&gt;</span></code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>List of <em>docker</em> containers to start before <em>App. Server</em></td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><em>extends</em> is support to extending <em>docker</em> definitions</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td><em>link</em> to another container. Related to <em>docker</em> linking</td></tr></table></div></section>
+<section class="bannerleft"><h2>Containerless</h2><figure><img src="./images/emptycontainer.jpg" alt="emptycontainer"><figcaption></figcaption></figure>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> any application that runs on <em>Docker</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <code>undertow</code> Java runnable application</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> functional tests</li></ul></section>
+<section class="source topic code-small"><h2>DaytimeServer</h2><div class="listingblock"><div class="title">DaytimeServer</div><pre class="highlight CodeRay"><code class="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">DaytimeServer</span> {
+
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    Undertow server = Undertow.builder()
+      .addHttpListener(<span class="integer">8080</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">0.0.0.0</span><span class="delimiter">&quot;</span></span>)
+      .setHandler(<span class="keyword">new</span> HttpHandler() {
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> handleRequest(<span class="directive">final</span> HttpServerExchange exchange) <span class="directive">throws</span> <span class="exception">Exception</span> {
+          <span class="predefined-type">SimpleDateFormat</span> simpleDateFormat = <span class="keyword">new</span> <span class="predefined-type">SimpleDateFormat</span>();
+          exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, <span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>);
+          exchange.getResponseSender()
+                  .send(simpleDateFormat.format(<span class="keyword">new</span> <span class="predefined-type">Date</span>()) + <span class="predefined-type">System</span>.lineSeparator());
+        }
+      }).build();
+    server.start(); <i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>It is a CLI Java application</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Server is started embedded in application</td></tr></table></div></section>
+<section class="source topic code-small"><h2>test</h2><div class="listingblock"><pre class="highlight CodeRay"><code class="java">  <span class="annotation">@Deployment</span>(testable = <span class="predefined-constant">false</span>)
+  <span class="directive">public</span> <span class="directive">static</span> JavaArchive createDeployment() {
+      JavaArchive<span class="type">[]</span> undertow = Maven.resolver()
+                                    .resolve(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.undertow:undertow-core:1.1.1.Final</span><span class="delimiter">&quot;</span></span>)
+                                    .withTransitivity().as(JavaArchive.class); <i class="conum" data-value="1"></i><b>(1)</b>
+
+      JavaArchive jar = ShrinkWrap
+              .create(JavaArchive.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">daytime.jar</span><span class="delimiter">&quot;</span></span>)
+              .addClass(DaytimeServer.class); <i class="conum" data-value="2"></i><b>(2)</b>
+      merge(jar, undertow);
+
+      jar.addAsManifestResource(
+              <span class="keyword">new</span> StringAsset(
+                      <span class="string"><span class="delimiter">&quot;</span><span class="content">Main-Class: org.arquillian.cube.impl.containerless.DaytimeServer</span><span class="delimiter">&quot;</span></span>
+                              + LINE_SEPARATOR), <span class="string"><span class="delimiter">&quot;</span><span class="content">MANIFEST.MF</span><span class="delimiter">&quot;</span></span>);<i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="keyword">return</span> jar;
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> shouldReturnDateFromDaytimeServer(<span class="annotation">@ArquillianResource</span> <span class="predefined-type">URL</span> base) {}</code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>resolves <code>undertow</code> dependencies</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>creates jar file with name <code>daytime.jar</code></td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>adds manifest for runnable jar</td></tr></table></div></section>
+<section class="source topic"><h2>pom</h2><div class="listingblock"><div class="title">pom.xml</div><pre class="highlight CodeRay"><code class="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.arquillian.cube<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>arquillian-cube-containerless<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>${arquillian.cube.version}<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre></div></section>
+<section class="source topic code-small"><h2>dockerfile template</h2><div class="listingblock"><div class="title">src/test/resources/undertow/DockerfileTemplate</div><pre class="highlight CodeRay"><code class="yaml"><span class="error">FROM java:7</span>
+
+<span class="error">WORKDIR /usr/src/server</span>
+<span class="error">COPY ${deployableFilename} /usr/src/server/${deployableFilename} </span><i class="conum" data-value="1"></i><b>(1)</b>
+<span class="error">EXPOSE 8080</span>
+<span class="error">CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;${deployableFilename}&quot;]</span></code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>deployableFilename will be replaced at runtime jar file created by Shrinkwrap.</td></tr></table></div></section>
+<section class="source topic code-small"><h2>arquillian.xml</h2><div class="listingblock"><div class="title">src/test/resources/arquillian.xml</div><pre class="highlight CodeRay"><code class="xml"><span class="tag">&lt;arquillian</span> <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">...</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">docker</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">serverVersion</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>1.12<span class="tag">&lt;/property&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dockerContainers</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      daytime:
+        buildImage:
+          dockerfileLocation: src/test/resources/undertow <i class="conum" data-value="1"></i><b>(1)</b>
+          noCache: true
+          remove: true
+        portBindings: [8080/tcp]
+    <span class="tag">&lt;/property&gt;</span>
+  <span class="tag">&lt;/extension&gt;</span>
+  <span class="tag">&lt;container</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">containerless</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">default</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="tag">&lt;configuration&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">containerlessDocker</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>daytime<span class="tag">&lt;/property&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">embeddedPort</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>8080<span class="tag">&lt;/property&gt;</span>
+    <span class="tag">&lt;/configuration&gt;</span>
+  <span class="tag">&lt;/container&gt;</span>
+<span class="tag">&lt;/arquillian&gt;</span></code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Sets the location of <code>dockerfileTemplate</code> file</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Adds containerless adapter</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Sets name of <em>docker</em> container to start</td></tr></table></div></section>
+<section class="bannerleft"><h2>Infrastructure Tests</h2><figure><img src="./images/disaster.jpg" alt="disaster"><figcaption></figcaption></figure>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> run infrastructure tests</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> polyglot microservices covered too</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> avoid production surprises</li></ul></section>
+<section class="imglandscape"><h2><em>What&#8217;s next</em></h2><figure><img src="./images/alexandra.jpg" alt="alexandra"><figcaption></figcaption></figure></section>
 <section><figure><img src="./images/github.jpg" alt="github"><figcaption>github.com/lordofthejars/decks</figcaption></figure></section>
 <section class="topic ending"><h2 class="name">Alex Soto</h2><p class="footer"><span class="icon"><i class="fa fa-twitter"></i></span> @alexsotob</p></section><script>
 //   __  __  __       .  __   ___  __
