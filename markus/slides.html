@@ -1466,7 +1466,7 @@ CMD ["catalina.sh", "run"]</code></pre></div></section>
 <section class="topic"><h2>Schema</h2><figure><img class="canvas middle" src="./images/dockerworkflow.png" alt="dockerworkflow"><figcaption></figcaption></figure></section>
 <section class="imglandscape"><h2><em>Arquillian</em></h2><figure><img src="./images/aq.jpg" alt="aq"><figcaption></figcaption></figure></section>
 <section class="icon"><h2>What is <em>Arquillian</em>?</h2><figure><img src="./images/arquillian.png" alt="arquillian"><figcaption></figcaption></figure>
-<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Test</em> Framework for <em>JavaEE</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Fills the <em>Gap</em> automated Unit/Integration tests</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Child&#8217;s game</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Functional/Security/IT Testing</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> JavaEE and <em>beyond</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Open</em> Source</li></ul></section>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Middleware</em> for your <em>tests</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Fills the <em>Gap</em> automated Unit/Integration tests</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Child&#8217;s game</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Functional/Security/IT Testing</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> JavaEE and <em>beyond</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Open</em> Source</li></ul></section>
 <section class="topic source"><h2>CDI Example</h2><div class="listingblock"><div class="title">PaymentGateway.java</div><pre class="highlight CodeRay"><code class="java"><span class="annotation">@Inject</span>
 <span class="annotation">@CreditCard</span>
 Payment payment; <i class="conum" data-value="1"></i><b>(1)</b></code></pre></div>
@@ -1617,74 +1617,60 @@ pg.doPayment(...);</code></pre></div>
 <span class="tag">&lt;/property&gt;</span></code></pre></div>
 <div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>List of <em>docker</em> containers to start before <em>App. Server</em></td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><em>extends</em> is support to extending <em>docker</em> definitions</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td><em>link</em> to another container. Related to <em>docker</em> linking</td></tr></table></div></section>
 <section class="bannerleft"><h2>Containerless</h2><figure><img src="./images/emptycontainer.jpg" alt="emptycontainer"><figcaption></figcaption></figure>
-<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> any application that runs on <em>Docker</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <code>undertow</code> Java runnable application</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> functional tests</li></ul></section>
-<section class="source topic code-small"><h2>DaytimeServer</h2><div class="listingblock"><div class="title">DaytimeServer</div><pre class="highlight CodeRay"><code class="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">DaytimeServer</span> {
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> any application that runs on <em>Docker</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <code>Node.js</code> application</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> functional tests</li></ul></section>
+<section class="source topic code-small"><h2>test</h2><div class="listingblock"><div class="title">NodeTest.java</div><pre class="highlight CodeRay"><code class="java"><span class="annotation">@RunWith</span>(Arquillian.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">NodeTest</span> {
 
-  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) { <i class="conum" data-value="1"></i><b>(1)</b>
-
-    Undertow server = Undertow.builder()
-      .addHttpListener(<span class="integer">8080</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">0.0.0.0</span><span class="delimiter">&quot;</span></span>)
-      .setHandler(<span class="keyword">new</span> HttpHandler() {
-        <span class="annotation">@Override</span>
-        <span class="directive">public</span> <span class="type">void</span> handleRequest(<span class="directive">final</span> HttpServerExchange exchange) <span class="directive">throws</span> <span class="exception">Exception</span> {
-          <span class="predefined-type">SimpleDateFormat</span> simpleDateFormat = <span class="keyword">new</span> <span class="predefined-type">SimpleDateFormat</span>();
-          exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, <span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>);
-          exchange.getResponseSender()
-                  .send(simpleDateFormat.format(<span class="keyword">new</span> <span class="predefined-type">Date</span>()) + <span class="predefined-type">System</span>.lineSeparator());
-        }
-      }).build();
-    server.start(); <i class="conum" data-value="2"></i><b>(2)</b>
-  }
-}</code></pre></div>
-<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>It is a CLI Java application</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Server is started embedded in application</td></tr></table></div></section>
-<section class="source topic code-small"><h2>test</h2><div class="listingblock"><pre class="highlight CodeRay"><code class="java">  <span class="annotation">@Deployment</span>(testable = <span class="predefined-constant">false</span>)
-  <span class="directive">public</span> <span class="directive">static</span> JavaArchive createDeployment() {
-      JavaArchive<span class="type">[]</span> undertow = Maven.resolver()
-                                    .resolve(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.undertow:undertow-core:1.1.1.Final</span><span class="delimiter">&quot;</span></span>)
-                                    .withTransitivity().as(JavaArchive.class); <i class="conum" data-value="1"></i><b>(1)</b>
-
-      JavaArchive jar = ShrinkWrap
-              .create(JavaArchive.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">daytime.jar</span><span class="delimiter">&quot;</span></span>)
-              .addClass(DaytimeServer.class); <i class="conum" data-value="2"></i><b>(2)</b>
-      merge(jar, undertow);
-
-      jar.addAsManifestResource(
-              <span class="keyword">new</span> StringAsset(
-                      <span class="string"><span class="delimiter">&quot;</span><span class="content">Main-Class: org.arquillian.cube.impl.containerless.DaytimeServer</span><span class="delimiter">&quot;</span></span>
-                              + LINE_SEPARATOR), <span class="string"><span class="delimiter">&quot;</span><span class="content">MANIFEST.MF</span><span class="delimiter">&quot;</span></span>);<i class="conum" data-value="3"></i><b>(3)</b>
-      <span class="keyword">return</span> jar;
+  <span class="annotation">@Deployment</span>(testable = <span class="predefined-constant">false</span>)
+  <span class="directive">public</span> <span class="directive">static</span> GenericArchive createDeployment() { <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="keyword">return</span> ShrinkWrap.create(GenericArchive.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">app.tar</span><span class="delimiter">&quot;</span></span>)
+              .add(<span class="keyword">new</span> FileAsset(<span class="keyword">new</span> <span class="predefined-type">File</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">src/test/js/index.js</span><span class="delimiter">&quot;</span></span>)), <span class="string"><span class="delimiter">&quot;</span><span class="content">index.js</span><span class="delimiter">&quot;</span></span>)
+              .add(<span class="keyword">new</span> FileAsset(<span class="keyword">new</span> <span class="predefined-type">File</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">src/test/js/package.json</span><span class="delimiter">&quot;</span></span>)), <span class="string"><span class="delimiter">&quot;</span><span class="content">package.json</span><span class="delimiter">&quot;</span></span>);
   }
 
   <span class="annotation">@Test</span>
-  <span class="directive">public</span> <span class="type">void</span> shouldReturnDateFromDaytimeServer(<span class="annotation">@ArquillianResource</span> <span class="predefined-type">URL</span> base) {}</code></pre></div>
-<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>resolves <code>undertow</code> dependencies</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>creates jar file with name <code>daytime.jar</code></td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>adds manifest for runnable jar</td></tr></table></div></section>
+  <span class="directive">public</span> <span class="type">void</span> shouldReturnMessageFromNodeJs(<span class="annotation">@ArquillianResource</span> <span class="predefined-type">URL</span> base) { <i class="conum" data-value="2"></i><b>(2)</b>
+
+      <span class="keyword">try</span> (<span class="predefined-type">BufferedReader</span> in = <span class="keyword">new</span> <span class="predefined-type">BufferedReader</span>(<span class="keyword">new</span> <span class="predefined-type">InputStreamReader</span>(
+              base.openStream()));) {
+          <span class="predefined-type">String</span> userInput = in.readLine();
+          assertThat(userInput, is(<span class="string"><span class="delimiter">&quot;</span><span class="content">Hello from inside a container!</span><span class="delimiter">&quot;</span></span>));
+      }
+  }
+
+}</code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>creates a <code>tar</code> file with all <code>Node.js</code> resources named <code>app.tar</code></td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><em>URL</em> of the service is injected as <code>@ArquillanResource</code></td></tr></table></div></section>
 <section class="source topic"><h2>pom</h2><div class="listingblock"><div class="title">pom.xml</div><pre class="highlight CodeRay"><code class="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.arquillian.cube<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>arquillian-cube-containerless<span class="tag">&lt;/artifactId&gt;</span>
   <span class="tag">&lt;version&gt;</span>${arquillian.cube.version}<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre></div></section>
-<section class="source topic code-small"><h2>dockerfile template</h2><div class="listingblock"><div class="title">src/test/resources/undertow/DockerfileTemplate</div><pre class="highlight CodeRay"><code class="yaml"><span class="error">FROM java:7</span>
+<section class="source topic code-small"><h2>dockerfile template</h2><div class="listingblock"><div class="title">src/test/resources/node/DockerfileTemplate</div><pre class="highlight CodeRay"><code class="yaml"><span class="error">FROM node:0.11.14</span>
 
-<span class="error">WORKDIR /usr/src/server</span>
-<span class="error">COPY ${deployableFilename} /usr/src/server/${deployableFilename} </span><i class="conum" data-value="1"></i><b>(1)</b>
+<span class="error">RUN mkdir -p /usr/src/app</span>
+<span class="error">WORKDIR /usr/src/app</span>
+
+<span class="error">ADD ${deployableFilename} /usr/src/app </span><i class="conum" data-value="1"></i><b>(1)</b>
+<span class="error">RUN npm install</span>
 <span class="error">EXPOSE 8080</span>
-<span class="error">CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;${deployableFilename}&quot;]</span></code></pre></div>
-<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>deployableFilename will be replaced at runtime jar file created by Shrinkwrap.</td></tr></table></div></section>
+
+<span class="error">CMD [ &quot;npm&quot;, &quot;start&quot; ]</span></code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>deployableFilename will be replaced at runtime archive created by Shrinkwrap.</td></tr></table></div></section>
 <section class="source topic code-small"><h2>arquillian.xml</h2><div class="listingblock"><div class="title">src/test/resources/arquillian.xml</div><pre class="highlight CodeRay"><code class="xml"><span class="tag">&lt;arquillian</span> <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">...</span><span class="tag">&gt;</span>
   <span class="tag">&lt;extension</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">docker</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
     <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">serverVersion</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>1.12<span class="tag">&lt;/property&gt;</span>
     <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dockerContainers</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-      daytime:
+      node:
         buildImage:
-          dockerfileLocation: src/test/resources/undertow <i class="conum" data-value="1"></i><b>(1)</b>
+          dockerfileLocation: src/test/resources/node <i class="conum" data-value="1"></i><b>(1)</b>
           noCache: true
           remove: true
-        portBindings: [8080/tcp]
+      portBindings: [8080/tcp]
     <span class="tag">&lt;/property&gt;</span>
   <span class="tag">&lt;/extension&gt;</span>
   <span class="tag">&lt;container</span> <span class="attribute-name">qualifier</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">containerless</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">default</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="tag">&lt;configuration&gt;</span>
-        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">containerlessDocker</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>daytime<span class="tag">&lt;/property&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">containerlessDocker</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>node<span class="tag">&lt;/property&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">embeddedPort</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>8080<span class="tag">&lt;/property&gt;</span>
     <span class="tag">&lt;/configuration&gt;</span>
   <span class="tag">&lt;/container&gt;</span>

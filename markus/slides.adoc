@@ -182,7 +182,7 @@ image::aq.jpg[]
 [ {caption-off}]
 image::arquillian.png[]
 
-* {point-label} _Test_ Framework for _JavaEE_
+* {point-label} _Middleware_ for your _tests_
 * {point-label} Fills the _Gap_ automated Unit/Integration tests
 * {point-label} Child's game
 * {point-label} Functional/Security/IT Testing
@@ -524,66 +524,39 @@ image::multiple_containers.jpg[]
 image::emptycontainer.jpg[]
 
 * {point-label} any application that runs on _Docker_
-* {point-label} `undertow` Java runnable application
+* {point-label} `Node.js` application
 * {point-label} functional tests
-
-[.source.topic.code-small]
-== DaytimeServer
-
-[source, java]
-.DaytimeServer
-----
-public class DaytimeServer {
-
-  public static void main(String[] args) { //<1>
-
-    Undertow server = Undertow.builder()
-      .addHttpListener(8080, "0.0.0.0")
-      .setHandler(new HttpHandler() {
-        @Override
-        public void handleRequest(final HttpServerExchange exchange) throws Exception {
-          SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-          exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-          exchange.getResponseSender()
-                  .send(simpleDateFormat.format(new Date()) + System.lineSeparator());
-        }
-      }).build();
-    server.start(); //<2>
-  }
-}
-----
-<1> It is a CLI Java application
-<2> Server is started embedded in application
 
 [.source.topic.code-small]
 == test
 
 [source, java]
+.NodeTest.java
 ----
+@RunWith(Arquillian.class)
+public class NodeTest {
+
   @Deployment(testable = false)
-  public static JavaArchive createDeployment() {
-      JavaArchive[] undertow = Maven.resolver()
-                                    .resolve("io.undertow:undertow-core:1.1.1.Final")
-                                    .withTransitivity().as(JavaArchive.class); //<1>
-
-      JavaArchive jar = ShrinkWrap
-              .create(JavaArchive.class, "daytime.jar")
-              .addClass(DaytimeServer.class); //<2>
-      merge(jar, undertow);
-
-      jar.addAsManifestResource(
-              new StringAsset(
-                      "Main-Class: org.arquillian.cube.impl.containerless.DaytimeServer"
-                              + LINE_SEPARATOR), "MANIFEST.MF");//<3>
-      return jar;
+  public static GenericArchive createDeployment() { //<1>
+      return ShrinkWrap.create(GenericArchive.class, "app.tar")
+              .add(new FileAsset(new File("src/test/js/index.js")), "index.js")
+              .add(new FileAsset(new File("src/test/js/package.json")), "package.json");
   }
 
   @Test
-  public void shouldReturnDateFromDaytimeServer(@ArquillianResource URL base) {}
+  public void shouldReturnMessageFromNodeJs(@ArquillianResource URL base) { //<2>
+
+      try (BufferedReader in = new BufferedReader(new InputStreamReader(
+              base.openStream()));) {
+          String userInput = in.readLine();
+          assertThat(userInput, is("Hello from inside a container!"));
+      }
+  }
+
+}
 ----
-<1> resolves `undertow` dependencies
-<2> creates jar file with name `daytime.jar`
-<3> adds manifest for runnable jar
+<1> creates a `tar` file with all `Node.js` resources named `app.tar`
+<2> _URL_ of the service is injected as `@ArquillanResource`
 
 [.source.topic]
 == pom
@@ -602,16 +575,20 @@ public class DaytimeServer {
 == dockerfile template
 
 [source, yaml]
-.src/test/resources/undertow/DockerfileTemplate
+.src/test/resources/node/DockerfileTemplate
 ----
-FROM java:7
+FROM node:0.11.14
 
-WORKDIR /usr/src/server
-COPY ${deployableFilename} /usr/src/server/${deployableFilename} #<1>
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+ADD ${deployableFilename} /usr/src/app #<1>
+RUN npm install
 EXPOSE 8080
-CMD ["java", "-jar", "${deployableFilename}"]
+
+CMD [ "npm", "start" ]
 ----
-<1> deployableFilename will be replaced at runtime jar file created by Shrinkwrap.
+<1> deployableFilename will be replaced at runtime archive created by Shrinkwrap.
 
 [.source.topic.code-small]
 == arquillian.xml
@@ -623,17 +600,17 @@ CMD ["java", "-jar", "${deployableFilename}"]
   <extension qualifier="docker">
     <property name="serverVersion">1.12</property>
     <property name="dockerContainers">
-      daytime:
+      node:
         buildImage:
-          dockerfileLocation: src/test/resources/undertow <!--1-->
+          dockerfileLocation: src/test/resources/node <!--1-->
           noCache: true
           remove: true
-        portBindings: [8080/tcp]
+      portBindings: [8080/tcp]
     </property>
   </extension>
   <container qualifier="containerless" default="true"> <!--2-->
     <configuration>
-        <property name="containerlessDocker">daytime</property> <!--3-->
+        <property name="containerlessDocker">node</property> <!--3-->
         <property name="embeddedPort">8080</property>
     </configuration>
   </container>
