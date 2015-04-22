@@ -1,0 +1,308 @@
+= _Document_ like the _Spring_ team using *Asciidoctor*
+Alex Soto <https://twitter.com/alexsotob[@alexsotob]>
+include::attributes.adoc[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::intro.png[]
+
+[.imglandscape]
+== _Writing_
+
+[ {caption-off}]
+image::adalearn.jpg[]
+
+//1042x688
+[.imglandscape]
+== _Docker_
+
+//size of windows
+//lot of menus (distractions)
+//title + author not looks pretty good
+//autocorrection doesn't fit what i want
+//fer un bold i es infinit
+//canvi de fonts size long combos
+//faltes
+//copy code from Eclipse
+//warning
+
+
+[.topic.intro]
+== Content is the _KING_
+
+//709x857
+[.bannerleft]
+== _Collaboration_
+
+[ {caption-off}]
+image::collaboration.jpg[]
+
+* {point-label} share folder
+* {point-label} SCM
+* {point-label} Notes
+* {point-label} Read-only
+
+[.topic]
+== _SCM_
+
+----
+$>git merge fix
+warning: Cannot merge binary files spec.doc (HEAD vs fix)
+
+Auto-merging spec.doc
+CONFLICT (content): Merge conflict in spec.doc
+
+$> git diff master..fix
+diff --git a/spec.doc b/spec.doc
+Binary files a/spec.doc and b/spec.doc differ
+----
+
+[.bannerleft]
+== _Outdated_ documentation
+
+[ {caption-off}]
+image::stress.jpg[]
+
+//no code review
+* {point-label} outside project
+* {point-label} traceable
+
+//1042x688
+[.imglandscape]
+== _Lightweight Markup Languages_
+
+[ {caption-off}]
+image::ballon.jpg[]
+
+[.topic]
+== Lightweight Markup Languages
+
+[.scatter]
+* {point-label} Markdown
+* {point-label} Textile
+* {point-label} DocBook
+* {point-label} Yaml
+* {point-label} Xml
+* {point-label} Html
+* {point-label} _AsciiDoc_
+
+[.topic.intro]
+== Docs _==_ Source Code
+
+//code review, PR, git, commit, branch, clone, same workspace
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::rich-diff.png[]
+
+[.topic]
+== Comparision
+
+[.middle.stretch-x]
+image::render.jpg[]
+
+[.topic.source]
+== DocBook
+
+[source, xml]
+----
+include::snippets/sample-docbook.xml[lines=1..21]
+    ...
+----
+
+[.topic.source]
+== DocBook (and going...)
+
+[source, xml]
+----
+    ...
+include::snippets/sample-docbook.xml[lines=22..43]
+            ...
+----
+
+[.topic.source]
+== DocBook (at last!)
+
+[source, xml]
+----
+            ...
+include::snippets/sample-docbook.xml[lines=44..-1]
+----
+
+== !
+
+"DocBook is nice, but (like XML) it is *not meant for editing* nor for merging changes (by humans)."
+-- Dag Wieers
+
+[.topic.source.code-small]
+== Markdown
+
+[source, markdown]
+----
+include::snippets/sample-markdown.md[]
+----
+
+[.topic.source.code-small]
+== AsciiDoc
+
+[source, asciidoc]
+----
+include::snippets/sample-asciidoc.adoc[]
+----
+
+[.topic.icon]
+== _AsciiDoc_
+
+[{caption-off}]
+image::icon.png[]
+
+* {point-label} One _Spec_ to Rule Them All
+* {point-label} One _Community_
+* {point-label} _Simple_ and _Natural_
+// toc, delimimited blocks (admonitions, sidebar, source), XReferences
+* {point-label} Advanced Features
+
+== !
+
+"Use AsciiDoc for document markup. Really. It's actually *readable* by humans, easier to parse, more flexible."
+-- Linus Torvalds
+
+[.bannerleft]
+== _Asciidoctor_
+
+[{caption-off}]
+image::coco.jpg[]
+
+* {point-label} AsciiDoc _Parser_ in _Ruby_
+* {point-label} _Toolchain_
+* {point-label} _Extend_ it
+* {dpoint-label} Custom syntax (_issue:_<id>[])
+* {dpoint-label} Custom converters (_haml_, _code_)
+* {dpoint-label} _AST_ transforms
+
+[.topic.intro]
+== Demo Time
+
+[.topic.icon]
+== _AsciidoctorJ_
+
+[{caption-off}]
+image::rubygems.png[]
+
+* {point-label} Asciidoctor for _JVM_
+* {point-label} _JRuby_
+* {point-label} _Extend_ it
+
+[.topic]
+== !
+
+[.middle.stretch-x]
+image::asciidoctor-java.png[]
+
+[.topic]
+== Thanks of _AsciidoctorJ_
+
+[.scatter]
+* {point-label} Maven plugin
+* {point-label} Gradle plugin
+* {point-label} jBake
+* {point-label} Asciidoclet
+* {point-label} JavaFX
+* {point-label} Eclipse, IntelliJ, Netbeans
+* {point-label} Scala (SBT)
+
+[.topic]
+== Runs on _Javascript_
+
+* {point-label} Opal
+* {point-label} asciidoctor.js
+
+[.imglandscape]
+== _Zen Techniques_
+
+[ {caption-off}]
+image::zen.jpg[]
+
+[.topic]
+== _#1_ One Sentence Per Line
+
+[listing]
+....
+------------.
+------------.
+
+------------.
+....
+
+[.topic]
+== _#2_ Comment
+
+[listing]
+....
+//ignore this line
+
+////
+ignore
+this
+block
+////
+....
+
+[.topic]
+== _#3_ Use attributes
+
+[listing]
+....
+:sourceDir: code/java
+
+Go to {sourceDir} and create a new class.
+....
+
+[.topic]
+== _#4_ Executable Documentation
+
+[listing]
+....
+[source, java]
+.HelloWorld.java
+----
+\include::{code}/HelloWorld.java[tags=hello_console_output, indent=0]
+----
+<1> Prints to console
+....
+
+[.topic]
+== _#4_ Executable Documentation
+
+[source, java]
+.HelloWorld.java
+----
+public void showMessage() {
+  // tag::hello_console_output[]
+  System.out.println("Hello World"); \//<1>
+  // end::hello_console_output[]
+
+  // tag::goodbye_console_output[]
+  System.out.println("Good Bye World"); \//<1>
+  // end::goodbye_console_output[]
+}
+----
+
+[.topic]
+== _#4_ Executable Documentation
+
+[.stretch-x]
+image::output.png[]
+
+== !
+
+[{caption-off}, hrole="name"]
+.github.com/lordofthejars/decks
+image::github.jpg[]
+
+[.topic.ending, hrole="name"]
+== Alex Soto
+[.footer]
+icon:twitter[] @alexsotob
