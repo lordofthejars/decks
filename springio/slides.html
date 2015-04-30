@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="aspect-16-9"><head><meta charset="UTF-8"><meta name="generator" content="Asciidoctor 1.5.2, dzslides backend"><title>Document like the Spring team using Asciidoctor</title><meta name="author" content="Alex Soto"><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton:400,700,800,400italic|Cedarville+Cursive"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css"><style>
+<!DOCTYPE html><html lang="en" class="aspect-4-3"><head><meta charset="UTF-8"><meta name="generator" content="Asciidoctor 1.5.2, dzslides backend"><title>Document like the Spring team using Asciidoctor</title><meta name="author" content="Alex Soto"><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton:400,700,800,400italic|Cedarville+Cursive"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css"><style>
 /* Asciidoctor style for highlight.js */
 pre code {
   display: block; padding: 0.5em;
@@ -1292,7 +1292,7 @@ hr {
 }
 
 .icon img {
-  top: 45px;
+  top: 105px;
   left: 40px;
   width: 128px;
   height: auto;
@@ -1320,14 +1320,14 @@ hr {
 .icon ul {
 top: 140px;
 font-size: 25px;
-margin-top: -325px;
+margin-top: -425px;
 margin-left: 175px;
 left: 200px;
 right: 20px;
 }
 
 .bannerleft img {
-  top: 45px;
+  top: 105px;
   left: 10px;
   width: 300px;
   border: 2px solid black;
@@ -1348,8 +1348,8 @@ right: 20px;
 .bannerleft ul {
 top: 140px;
 font-size: 25px;
-margin-top: -325px;
-margin-left: 285px;
+margin-top: -450px;
+margin-left: 275px;
 left: 400px;
 right: 20px;
 }
@@ -1409,6 +1409,13 @@ right: 20px;
   width: 50%;
 }
 
+.listing-middle {
+  font-size: 30px;
+  position: relative;
+  top: 30%;
+  transform: translate(0, -50%);
+}
+
 .code-small code {
   font-size: .9em;
   line-height: .9
@@ -1416,12 +1423,15 @@ right: 20px;
 .code-small table {
   border-collapse: collapse;
 }
-</style></head><body><section class="title"><h1><em>Document</em> like the <em>Spring</em> team using <strong>Asciidoctor</strong></h1><footer><span class="author">Alex Soto</span> <span class="email"><a href="https://twitter.com/alexsotob">@alexsotob</a></span></footer></section><section><figure><img class="canvas relax-x middle" src="./images/intro.png" alt="intro"><figcaption></figcaption></figure></section>
-<section class="imglandscape"><h2><em>Writing</em></h2><figure><img src="./images/adalearn.jpg" alt="adalearn"><figcaption></figcaption></figure></section>
-<section class="imglandscape"><h2><em>Docker</em></h2></section>
+</style></head><body><section class="title"><h1><em>Document</em> like the <em>Spring</em> team using <em>Asciidoctor</em></h1><footer><span class="author">Alex Soto</span> <span class="email"><a href="https://twitter.com/alexsotob">@alexsotob</a></span></footer></section><section class="imglandscape"><h2><em>Writing</em></h2><figure><img src="./images/adalearn.jpg" alt="adalearn"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Office Way</em></h2><figure><img class="canvas relax-x middle" src="./images/bold.jpg" alt="bold"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Office Way</em></h2><figure><img class="canvas relax-x middle" src="./images/spell.jpg" alt="spell"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Office Way</em></h2><figure><img class="canvas relax-x middle" src="./images/xref.png" alt="xref"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Office Way</em></h2><figure><img class="canvas relax-x middle" src="./images/toc.jpg" alt="toc"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Office Way</em></h2><figure><img class="canvas relax-x middle" src="./images/paste.jpg" alt="paste"><figcaption></figcaption></figure></section>
 <section class="topic intro"><h2>Content is the <em>KING</em></h2></section>
 <section class="bannerleft"><h2><em>Collaboration</em></h2><figure><img src="./images/collaboration.jpg" alt="collaboration"><figcaption></figcaption></figure>
-<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> share folder</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> SCM</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Notes</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Read-only</li></ul></section>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Share folder</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> SCM</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Notes</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Read-only</li></ul></section>
 <section class="topic"><h2><em>SCM</em></h2><div class="listingblock"><pre>$&gt;git merge fix
 warning: Cannot merge binary files spec.doc (HEAD vs fix)
 
@@ -1432,12 +1442,13 @@ $&gt; git diff master..fix
 diff --git a/spec.doc b/spec.doc
 Binary files a/spec.doc and b/spec.doc differ</pre></div></section>
 <section class="bannerleft"><h2><em>Outdated</em> documentation</h2><figure><img src="./images/stress.jpg" alt="stress"><figcaption></figcaption></figure>
-<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> outside project</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> traceable</li></ul></section>
-<section class="imglandscape"><h2><em>Lightweight Markup Languages</em></h2><figure><img src="./images/ballon.jpg" alt="ballon"><figcaption></figcaption></figure></section>
-<section class="topic"><h2>Lightweight Markup Languages</h2><ul class="scatter"><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Markdown</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Textile</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> DocBook</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Yaml</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Xml</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Html</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>AsciiDoc</em></li></ul></section>
-<section class="topic intro"><h2>Docs <em>==</em> Source Code</h2></section>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Outside project</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Traceable</li></ul></section>
+<section class="imglandscape"><h2><em>Lightweight ML</em></h2><figure><img src="./images/ballon.jpg" alt="ballon"><figcaption></figcaption></figure></section>
+<section class="topic"><h2>Lightweight Markup Languages</h2><ul class="scatter"><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Markdown</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Textile</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> DocBook</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Yaml</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Xml</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Html</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> MediaWiki</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>AsciiDoc</em></li></ul></section>
+<section class="topic intro"><h2>Docs <em>==</em> Code</h2></section>
 <section><figure><img class="canvas relax-x middle" src="./images/rich-diff.png" alt="rich diff"><figcaption></figcaption></figure></section>
-<section class="topic"><h2>Comparision</h2><img class="middle stretch-x" src="./images/render.jpg" alt="render"></section>
+<section class="imglandscape"><h2><em>Comparision</em></h2><figure><img src="./images/comp.jpg" alt="comp"><figcaption></figcaption></figure></section>
+<section class="topic"><img class="middle stretch-x" src="./images/render.jpg" alt="render"></section>
 <section class="topic source"><h2>DocBook</h2><div class="listingblock"><pre class="highlight CodeRay"><code class="xml"><span class="doctype">&lt;!DOCTYPE book PUBLIC &quot;-//OASIS//DTD DocBook XML V4.5//EN&quot;
     &quot;http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd&quot;&gt;</span>
 <span class="tag">&lt;book</span> <span class="attribute-name">lang</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">en</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -1544,10 +1555,23 @@ Document sections start at *level 1* and can nest four levels deep.
 [source,ruby]
 puts 'Hello, World!'</code></pre></div></section>
 <section class="topic icon"><h2><em>AsciiDoc</em></h2><figure><img src="./images/icon.png" alt="icon"><figcaption></figcaption></figure>
-<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> One <em>Spec</em> to Rule Them All</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> One <em>Community</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Simple</em> and <em>Natural</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Advanced Features</li></ul></section>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> One <em>spec</em> to rule them all</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> One <em>community</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Simple</em> and <em>natural</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Advanced features</li></ul></section>
 <section><blockquote><p>Use AsciiDoc for document markup. Really. It&#8217;s actually <strong>readable</strong> by humans, easier to parse, more flexible.</p><br><cite>Linus Torvalds</cite></blockquote></section>
 <section class="bannerleft"><h2><em>Asciidoctor</em></h2><figure><img src="./images/coco.jpg" alt="coco"><figcaption></figcaption></figure>
-<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> AsciiDoc <em>Parser</em> in <em>Ruby</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Toolchain</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Extend</em> it</li><li> &#160; <span class="icon"><i class="fa fa-caret-right"></i></span> Custom syntax (<em>issue:</em>&lt;id&gt;[])</li><li> &#160; <span class="icon"><i class="fa fa-caret-right"></i></span> Custom converters (<em>haml</em>, <em>code</em>)</li><li> &#160; <span class="icon"><i class="fa fa-caret-right"></i></span> <em>AST</em> transforms</li></ul></section>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> AsciiDoc <em>Parser</em> in <em>Ruby</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Toolchain</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Extend</em> it</li><li> &#160; <span class="icon"><i class="fa fa-caret-right"></i></span> Custom syntax (<em>issue:</em>&lt;id&gt;[])</li><li> &#160; <span class="icon"><i class="fa fa-caret-right"></i></span> Custom converters (<em>tilt</em>, <em>code</em>)</li><li> &#160; <span class="icon"><i class="fa fa-caret-right"></i></span> <em>AST</em> transforms</li></ul></section>
+<section class="topic"><h2>Extension example (<em>Diagrams</em>)</h2><ul class="scatter"><li>PlantUML</li><li>Ditaa</li><li>Shaape</li><li>BloqDiag, SeqDiag, ActDiag, NwDiag</li><li>GraphVIZ Dot</li></ul></section>
+<section class="topic"><h2>Diagrams (<em>ditaa</em>)</h2><div class="listingblock"><pre class="highlight CodeRay"><code class="no-highlight">[ditaa]
+....
++--------+   +-------+    +-------+
+|        | --+ ditaa +--&gt; |       |
+|  Text  |   +-------+    |diagram|
+|Document|   |!magic!|    |       |
++---+----+   +-------+    +-------+
+    :                         ^
+    |       Lots of work      |
+    +-------------------------+
+....</code></pre></div>
+<img src="./images/ditaa.png" alt="ditaa"></section>
 <section class="topic intro"><h2>Demo Time</h2></section>
 <section class="topic icon"><h2><em>AsciidoctorJ</em></h2><figure><img src="./images/rubygems.png" alt="rubygems"><figcaption></figcaption></figure>
 <ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Asciidoctor for <em>JVM</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>JRuby</em></li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Extend</em> it</li></ul></section>
@@ -1555,11 +1579,11 @@ puts 'Hello, World!'</code></pre></div></section>
 <section class="topic"><h2>Thanks of <em>AsciidoctorJ</em></h2><ul class="scatter"><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Maven plugin</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Gradle plugin</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> jBake</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Asciidoclet</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> JavaFX</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Eclipse, IntelliJ, Netbeans</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Scala (SBT)</li></ul></section>
 <section class="topic"><h2>Runs on <em>Javascript</em></h2><ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Opal</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> asciidoctor.js</li></ul></section>
 <section class="imglandscape"><h2><em>Zen Techniques</em></h2><figure><img src="./images/zen.jpg" alt="zen"><figcaption></figcaption></figure></section>
-<section class="topic"><h2><em>#1</em> One Sentence Per Line</h2><div class="listingblock"><pre>------------.
+<section class="topic"><h2><em>#1</em> One Sentence Per Line</h2><div class="literalblock listing-middle"><pre class="literal">------------.
 ------------.
 
 ------------.</pre></div></section>
-<section class="topic"><h2><em>#2</em> Comment</h2><div class="listingblock"><pre>//ignore this line
+<section class="topic"><h2><em>#2</em> Comment</h2><div class="literalblock listing-middle"><pre class="literal">//ignore this line
 
 ////
 ignore
@@ -1569,19 +1593,42 @@ block
 <section class="topic"><h2><em>#3</em> Use attributes</h2><div class="listingblock"><pre>:sourceDir: code/java
 
 Go to {sourceDir} and create a new class.</pre></div></section>
-<section class="topic"><h2><em>#4</em> Executable Documentation</h2><div class="listingblock"><pre>[source, java]
+<section class="topic"><h2><em>#4</em> Executable Documentation</h2><div class="listingblock"><pre>:code: src/main/java
+
+[source, java]
 .HelloWorld.java
 ----
-include::{code}/HelloWorld.java[tags=console_output, indent=0]
+include::{code}/HelloWorld.java[tags=hello_console_output, indent=0]
 ----
 &lt;1&gt; Prints to console</pre></div></section>
-<section class="topic"><h2><em>#4</em> Executable Documentation</h2><div class="listingblock"><div class="title">HelloWorld.java</div><pre class="highlight CodeRay"><code class="java"><span class="directive">public</span> <span class="type">void</span> showMessage() {
-  <span class="comment">// tag::console_output[]</span>
-  <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Hello World</span><span class="delimiter">&quot;</span></span>); \<i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="comment">// end::console_output[]</span>
-}</code></pre></div></section>
+<section class="topic"><h2><em>#4</em> Executable Documentation</h2><div class="listingblock"><pre>public void showMessage() {
+  // tag::hello_console_output[]
+  System.out.println("Hello World");
+  // end::hello_console_output[]
+
+  // tag::goodbye_console_output[]
+  System.out.println("Good Bye World");
+  // end::goodbye_console_output[]
+}</pre></div></section>
 <section class="topic"><h2><em>#4</em> Executable Documentation</h2><img class="stretch-x" src="./images/output.png" alt="output"></section>
-<section><figure><img src="./images/github.jpg" alt="github"><figcaption>github.com/lordofthejars/decks</figcaption></figure></section>
+<section class="imglandscape"><h2><em>Build Automation</em></h2><figure><img src="./images/auto.jpg" alt="auto"><figcaption></figcaption></figure></section>
+<section class="bannerleft"><h2><em>Automation</em></h2><figure><img src="./images/gear.jpg" alt="gear"><figcaption></figcaption></figure>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Compile, test, package application</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> <em>Render</em> documentation</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Deploy, test and <em>finally</em> publish docs</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Release application</li></ul></section>
+<section class="topic"><h2><em>Tooling</em> (gvm, laszybones and gradle)</h2><div class="listingblock"><pre>$&gt; curl -s get.gvmtool.net | bash
+
+$&gt; gvm install lazybones
+
+$&gt; lazybones create asciidoctor-gradle doc
+
+$&gt; gradlew asciidoctor</pre></div></section>
+<section class="topic intro"><h2>Demo Time</h2></section>
+<section class="imglandscape"><h2><em>Spring examples</em></h2><figure><img src="./images/spring.jpg" alt="spring"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Spring LDAP Use Case</em></h2><figure><img class="canvas relax-x middle" src="./images/ldap.jpg" alt="ldap"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Spring Security Use Case</em></h2><figure><img class="canvas relax-x middle" src="./images/sec.jpg" alt="sec"><figcaption></figcaption></figure></section>
+<section class="topic"><h2><em>Spring Guides Use Case</em></h2><figure><img class="canvas relax-x middle" src="./images/guide.jpg" alt="guide"><figcaption></figcaption></figure></section>
+<section class="bannerleft"><h2><em>Conclusions</em></h2><figure><img src="./images/conc.jpg" alt="conc"><figcaption></figcaption></figure>
+<ul><li> <span class="icon"><i class="fa fa-caret-right"></i></span> docs <em>==</em> code</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> User <em>stories</em>, <em>Jenkins</em> deployment, <em>configuration</em> files</li><li> <span class="icon"><i class="fa fa-caret-right"></i></span> Branch, Fork, PR, &#8230;&#8203; for <em>Collaboration</em></li></ul></section>
+<section><figure><img src="./images/github.jpg" alt="github"><figcaption class="band">github.com/lordofthejars/decks</figcaption></figure></section>
 <section class="topic ending"><h2 class="name">Alex Soto</h2><p class="footer"><span class="icon"><i class="fa fa-twitter"></i></span> @alexsotob</p></section><script>
 //   __  __  __       .  __   ___  __
 //  |  \  / /__` |    | |  \ |__  /__`

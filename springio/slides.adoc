@@ -1,11 +1,6 @@
-= _Document_ like the _Spring_ team using *Asciidoctor*
+= _Document_ like the _Spring_ team using _Asciidoctor_
 Alex Soto <https://twitter.com/alexsotob[@alexsotob]>
 include::attributes.adoc[]
-
-== !
-
-[.canvas.relax-x.middle, {caption-off}]
-image::intro.png[]
 
 [.imglandscape]
 == _Writing_
@@ -14,19 +9,35 @@ image::intro.png[]
 image::adalearn.jpg[]
 
 //1042x688
-[.imglandscape]
-== _Docker_
+[.topic]
+== _Office Way_
 
-//size of windows
-//lot of menus (distractions)
-//title + author not looks pretty good
-//autocorrection doesn't fit what i want
-//fer un bold i es infinit
-//canvi de fonts size long combos
-//faltes
-//copy code from Eclipse
-//warning
+[.canvas.relax-x.middle, {caption-off}]
+image::bold.jpg[]
 
+[.topic]
+== _Office Way_
+
+[.canvas.relax-x.middle, {caption-off}]
+image::spell.jpg[]
+
+[.topic]
+== _Office Way_
+
+[.canvas.relax-x.middle, {caption-off}]
+image::xref.png[]
+
+[.topic]
+== _Office Way_
+
+[.canvas.relax-x.middle, {caption-off}]
+image::toc.jpg[]
+
+[.topic]
+== _Office Way_
+
+[.canvas.relax-x.middle, {caption-off}]
+image::paste.jpg[]
 
 [.topic.intro]
 == Content is the _KING_
@@ -38,7 +49,7 @@ image::adalearn.jpg[]
 [ {caption-off}]
 image::collaboration.jpg[]
 
-* {point-label} share folder
+* {point-label} Share folder
 * {point-label} SCM
 * {point-label} Notes
 * {point-label} Read-only
@@ -65,12 +76,12 @@ Binary files a/spec.doc and b/spec.doc differ
 image::stress.jpg[]
 
 //no code review
-* {point-label} outside project
-* {point-label} traceable
+* {point-label} Outside project
+* {point-label} Traceable
 
 //1042x688
 [.imglandscape]
-== _Lightweight Markup Languages_
+== _Lightweight ML_
 
 [ {caption-off}]
 image::ballon.jpg[]
@@ -85,10 +96,11 @@ image::ballon.jpg[]
 * {point-label} Yaml
 * {point-label} Xml
 * {point-label} Html
+* {point-label} MediaWiki
 * {point-label} _AsciiDoc_
 
 [.topic.intro]
-== Docs _==_ Source Code
+== Docs _==_ Code
 
 //code review, PR, git, commit, branch, clone, same workspace
 
@@ -97,8 +109,15 @@ image::ballon.jpg[]
 [.canvas.relax-x.middle, {caption-off}]
 image::rich-diff.png[]
 
+//1042x688
+[.imglandscape]
+== _Comparision_
+
+[ {caption-off}]
+image::comp.jpg[]
+
 [.topic]
-== Comparision
+== !
 
 [.middle.stretch-x]
 image::render.jpg[]
@@ -158,11 +177,11 @@ include::snippets/sample-asciidoc.adoc[]
 [{caption-off}]
 image::icon.png[]
 
-* {point-label} One _Spec_ to Rule Them All
-* {point-label} One _Community_
-* {point-label} _Simple_ and _Natural_
+* {point-label} One _spec_ to rule them all
+* {point-label} One _community_
+* {point-label} _Simple_ and _natural_
 // toc, delimimited blocks (admonitions, sidebar, source), XReferences
-* {point-label} Advanced Features
+* {point-label} Advanced features
 
 == !
 
@@ -179,8 +198,39 @@ image::coco.jpg[]
 * {point-label} _Toolchain_
 * {point-label} _Extend_ it
 * {dpoint-label} Custom syntax (_issue:_<id>[])
-* {dpoint-label} Custom converters (_haml_, _code_)
+* {dpoint-label} Custom converters (_tilt_, _code_)
 * {dpoint-label} _AST_ transforms
+
+[.topic]
+== Extension example (_Diagrams_)
+
+[.scatter]
+* PlantUML
+* Ditaa
+* Shaape
+* BloqDiag, SeqDiag, ActDiag, NwDiag
+* GraphVIZ Dot
+
+[.topic]
+== Diagrams (_ditaa_)
+
+[source]
+----
+
+[ditaa]
+....
++--------+   +-------+    +-------+
+|        | --+ ditaa +--> |       |
+|  Text  |   +-------+    |diagram|
+|Document|   |!magic!|    |       |
++---+----+   +-------+    +-------+
+    :                         ^
+    |       Lots of work      |
+    +-------------------------+
+....
+----
+
+image::ditaa.png[]
 
 [.topic.intro]
 == Demo Time
@@ -229,6 +279,7 @@ image::zen.jpg[]
 == _#1_ One Sentence Per Line
 
 [listing]
+[.listing-middle]
 ....
 ------------.
 ------------.
@@ -240,6 +291,7 @@ image::zen.jpg[]
 == _#2_ Comment
 
 [listing]
+[.listing-middle]
 ....
 //ignore this line
 
@@ -265,6 +317,8 @@ Go to {sourceDir} and create a new class.
 
 [listing]
 ....
+:code: src/main/java
+
 [source, java]
 .HelloWorld.java
 ----
@@ -276,19 +330,18 @@ Go to {sourceDir} and create a new class.
 [.topic]
 == _#4_ Executable Documentation
 
-[source, java]
-.HelloWorld.java
-----
+[listing]
+....
 public void showMessage() {
   // tag::hello_console_output[]
-  System.out.println("Hello World"); \//<1>
+  System.out.println("Hello World");
   // end::hello_console_output[]
 
   // tag::goodbye_console_output[]
-  System.out.println("Good Bye World"); \//<1>
+  System.out.println("Good Bye World");
   // end::goodbye_console_output[]
 }
-----
+....
 
 [.topic]
 == _#4_ Executable Documentation
@@ -296,9 +349,78 @@ public void showMessage() {
 [.stretch-x]
 image::output.png[]
 
+
+[.imglandscape]
+== _Build Automation_
+
+[ {caption-off}]
+image::auto.jpg[]
+
+[.bannerleft]
+== _Automation_
+
+[ {caption-off}]
+image::gear.jpg[]
+
+* {point-label} Compile, test, package application
+* {point-label} _Render_ documentation
+* {point-label} Deploy, test and _finally_ publish docs
+* {point-label} Release application
+
+[.topic]
+== _Tooling_ (gvm, laszybones and gradle)
+
+[listing]
+....
+$> curl -s get.gvmtool.net | bash
+
+$> gvm install lazybones
+
+$> lazybones create asciidoctor-gradle doc
+
+$> gradlew asciidoctor
+....
+
+[.topic.intro]
+== Demo Time
+
+[.imglandscape]
+== _Spring examples_
+
+[ {caption-off}]
+image::spring.jpg[]
+
+[.topic]
+== _Spring LDAP Use Case_
+
+[.canvas.relax-x.middle, {caption-off}]
+image::ldap.jpg[]
+
+[.topic]
+== _Spring Security Use Case_
+
+[.canvas.relax-x.middle, {caption-off}]
+image::sec.jpg[]
+
+[.topic]
+== _Spring Guides Use Case_
+
+[.canvas.relax-x.middle, {caption-off}]
+image::guide.jpg[]
+
+[.bannerleft]
+== _Conclusions_
+
+[ {caption-off}]
+image::conc.jpg[]
+
+* {point-label} docs _==_ code
+* {point-label} User _stories_, _Jenkins_ deployment, _configuration_ files
+* {point-label} Branch, Fork, PR, ... for _Collaboration_
+
 == !
 
-[{caption-off}, hrole="name"]
+[{caption-off}, crole="band"]
 .github.com/lordofthejars/decks
 image::github.jpg[]
 
