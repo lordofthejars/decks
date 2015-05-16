@@ -1,0 +1,626 @@
+= _Arquillian_ loves _JavaScript_ too
+Alex Soto <https://twitter.com/alexsotob[@alexsotob]>
+include::attributes.adoc[]
+
+////
+The purpose of automated testing is to enable change.
+Verifying correctness is just a nice side-effect.
+
+Testear con mocks sólo demuestra que sabes como escribir mocks
+
+Dan Allen
+Jeremy Norris
+* Next Steps
+
+////
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::intro.png[]
+
+//709x857
+[.bannerleft]
+== ToC
+
+[ {caption-off}]
+image::toc.jpg[]
+
+* What is Arquillian?
+* AngularJs and Java
+* Testing Backend
+* Testing Frontend
+* Arquillian Drone/Graphene
+* Demo
+* Arquillian Cube
+* Conclusions
+
+//1042x688
+[.imglandscape]
+== _Arquillian_
+
+[{caption-off}]
+image::aq.jpg[]
+
+[.icon]
+== What is _Arquillian_?
+
+[ {caption-off}]
+image::arquillian.png[]
+
+* {point-label} _Middleware_ for your _tests_
+* {point-label} Fills the _Gap_ automated Unit/Integration tests
+* {point-label} Child's game
+* {point-label} Functional/Security/IT Testing
+* {point-label} JavaEE and _beyond_
+* {point-label} _Open_ Source
+
+[.topic.source]
+== CDI Example
+
+[source, java]
+.PaymentGateway.java
+----
+@Inject
+@CreditCard
+Payment payment; // <1>
+----
+<1> CDI container injects the instance
+
+[source, java]
+.PaymentGatewayTest.java
+----
+PaymentGateway pg = new PaymentGateway();
+pg.setPayment(new CreditCardPayment()); // <1> <2>
+pg.doPayment(...);
+----
+<1> In test we are injecting manually the instance
+<2> Or a mocked instance
+
+[.topic.intro]
+== Would it work in production?
+
+[.imglandscape]
+== !
+
+[{caption-off}]
+image::ada.jpg[]
+
+//increase *certainty*
+//build *confidence*
+//increase *robustness*
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::1_select_a_container.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::2_start_container.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::3_package_test_archive.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::4_run_test_in_container.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::5_test_result.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::6_disconnect_container.png[]
+
+[.source.topic]
+== Add Arquillian
+
+[source]
+.pom.xml
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.arquillian</groupId>
+      <artifactId>arquillian-bom</artifactId>
+      <version>1.1.7.Final</version>
+      <scope>import</scope>
+      <type>pom</type> <!--1-->
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
+<1> Arquillian comes in `bom` format
+
+[.source.topic]
+== Choose Application Server
+
+[source]
+.pom.xml
+----
+<dependency>
+  <groupId>org.apache.openejb</groupId>
+  <artifactId>arquillian-tomee-embedded</artifactId> <!--1-->
+  <version>1.7.1</version>
+  <scope>test</scope>
+</dependency>
+----
+<1> Apache TomEE in embedded mode
+
+[.source.topic.code-small]
+== Write In-Container Test
+
+[source, java]
+.PaymentTest.java
+----
+@RunWith(Arquillian.class) //<1>
+public class PaymentTest {
+
+  @Deployment public static JavaArchive createDeployment() { //<2>
+    return ShrinkWrap.create(JavaArchive.class)
+            .addPackages(true, "org.superbiz")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+  }
+
+  @Inject PaymentGateway payment; //<3>
+
+  @Test
+  public void should_make_credit_card_transfers() {
+    Account a = new Account("a", 100);
+    Account b = new Account("b", 100);
+    payment.payUsingCreditCard(a, b, 50);
+  }
+}
+----
+<1> Arquillian Runner
+<2> Shrinkwrap creates deployable file programmatically
+<3> Test Enrichment
+
+[.source.topic.code-small]
+== Write As Client Test
+
+[source, java]
+.HelloWorldServletTest.java
+----
+@RunWith(Arquillian.class)
+public class HelloWorldServletTest {
+
+  @Deployment(testable=false) //<1>
+  public static WebArchive create() {
+      return ShrinkWrap.create(WebArchive.class, "hello.war")
+      .addClass(HelloWorldServlet.class);
+  }
+
+  @Test
+  public void readContent(@ArquillianResource URL base) throws IOException { //<2>
+    URL url = new URL(base, "HelloWorld"); //<3>
+    String response = readResponse(url);
+    assertThat(response, is("..."));
+  }
+----
+<1> Sets test as `RunInClient` mode
+<2> Gets context _URL_ with `@ArquillianResource`
+<3> Opens a connection
+
+[.topic.intro]
+== *Demo* time
+
+
+[.imglandscape]
+== _AngularJS and Java_
+
+[{caption-off}]
+image::javaeeangular.png[]
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::scenario.png[]
+
+[.icon]
+== _FrontEnd_ tests?
+
+[ {caption-off}]
+image::angular.png[]
+
+* {point-label} _QUnit_ or _Jasmine_
+* {point-label} _Sinon.js_ or _$httpBackend_
+* {point-label} _karma_ test-runner
+* {point-label} _Selenium_ or _DalekJS_ or _Geb_ + _Freddie_
+* {point-label} _Open_ Source
+
+//TODO example jasmine+$httpBackend
+
+[.icon]
+== _BackEnd_ REST tests?
+
+[ {caption-off}]
+image::javaee.png[]
+
+* {point-label} _Arquillian_ in client mode
+* {point-label} _REST-Assured_ + _JsonPath_
+
+//TODO example
+
+//1042x688
+[.imglandscape]
+== _Integration_
+
+[{caption-off}]
+image::auto.jpg[]
+
+[.icon]
+== Browser Automation
+
+[ {caption-off}]
+image::selenium.png[]
+
+* {point-label} _De-facto_ solution for web automation
+* {point-label} Drives the _browser_
+* {point-label} _Access_ web elements
+
+[.source.code]
+== Example
+
+[source, java]
+----
+driver.get(contextPath.toString()+"login.xhtml");
+
+WebElement username = driver.findElement(By.id("username"));
+WebElement password = driver.findElement(By.id("password"));
+WebElement submit = driver.findElement(By.id("submit"));
+
+username.sendKeys("aa");
+password.sendKeys("bb");
+
+submit.click();
+
+WebElement welcomeMessage = driver.findElement(By.id("welcomeMessage"));
+
+assertThat(welcomeMessage.getText(), is("Welcome"));
+----
+
+[.icon]
+== Arquillian _Drone_/_Graphene_
+
+[ {caption-off}]
+image::drone.png[]
+
+* {point-label} _Drone_ adds _WebDriver_ to Arquillan
+* {point-label} _Multiple_ browsers in single test
+* {point-label} _Graphene_ adds _sexy_ webdriver API
+* {point-label} _AJAX_-enabled
+* {point-label} _PageObjects_ pattern
+* {point-label} _JQuery_ selectors
+* {point-label} Call _JavaScript_ as Java
+* {point-label} Integrates with _QUnit_
+
+[.icon]
+== Arquillian AngularJS extension
+
+[ {caption-off}]
+image::angular.png[]
+
+* {point-label} Extend capabilities of _Graphene_
+* {point-label} _Sycnhronize_ AngularJS calls
+* {point-label} `@FindByNg` annotation support
+
+[.source.topic.code-small]
+== pom.xml
+
+[source, xml]
+.pom.xml
+----
+<dependencyManagement>
+  <dependency>
+    <groupId>org.jboss.arquillian.extension</groupId>
+    <artifactId>arquillian-drone-bom</artifactId> <!--1-->
+    <version>2.0.0.Alpha4</version>
+    <type>pom</type>
+    <scope>import</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.jboss.arquillian.selenium</groupId> <!--2-->
+    <artifactId>selenium-bom</artifactId>
+    <version>2.45.0</version>
+    <type>pom</type>
+    <scope>import</scope>
+  </dependency>
+</dependencyManagement>
+----
+<1> Arquillian Drone dependencies
+<2> Selenium Driver dependencies
+
+[.source.topic.code-small]
+== pom.xml
+
+[source, xml]
+.pom.xml
+----
+<dependencies>
+
+  <dependency>
+    <groupId>org.jboss.arquillian.graphene</groupId>
+    <artifactId>graphene-webdriver</artifactId> <!--1-->
+    <version>2.1.0.Alpha2</version>
+    <type>pom</type>
+    <scope>test</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.jboss.arquillian.extension</groupId>
+    <artifactId>arquillian-angularjs-graphene</artifactId> <!--2-->
+    <version>1.2.0.Beta1</version>
+    <type>pom</type>
+    <scope>test</scope>
+  </dependency>
+
+</dependencies>
+----
+<1> Adds Graphene dependency.
+<2> Adds AngularJs extension.
+
+[.source.topic.code-small]
+== arquillian.xml
+
+[source, xml]
+.src/test/resources/arquillian.xml
+----
+<arquillian xmlns="http://jboss.com/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <extension qualifier="webdriver">
+        <property name="browser">${browser}</property> <!--1-->
+    </extension>
+</arquillian>
+----
+<1> System property
+
+[.source.topic.code-small]
+== index.html
+
+[source, html]
+.src/main/resources/index.html
+----
+<div ng-controller="TodoCtrl">
+  <span>{{remaining()}} of {{todos.length}} remaining</span>
+  [ <a href="" ng-click="archive()">archive</a> ]
+
+  <ul class="unstyled">
+
+    <li ng-repeat="todo in todos">
+      <input type="checkbox" ng-model="todo.done">
+      <span class="done-{{todo.done}}">{{todo.text}}</span>
+    </li>
+
+  </ul>
+
+  <form ng-submit="addTodo()">
+    <input type="text" ng-model="todoText"  size="30" placeholder="add new todo here">
+    <input class="btn-primary" type="submit" value="add">
+  </form>
+
+</div>
+----
+
+[.source.topic.code-small]
+== TodoListPageObject.java
+
+[source, java]
+----
+public class TodoListPageObject {
+
+    @FindByNg(model = "todo.done") private List<WebElement> todos;
+    @FindByNg(model = "todoText") private WebElement todoEntry;
+
+    @FindByNg(action = "archive()") private WebElement archive;
+    @FindByNg(action = "addTodo()") private WebElement addTodo;
+
+    @FindByNg(repeat = "todo in todos") private List<WebElement> todoRepeat;
+
+    @Drone private WebDriver driver;
+
+    public List<TodoItem> openTasks() {
+        final List<WebElement> currentTodos = todoRepeat;
+        return currentTodos.stream().map((input) -> {
+            final WebElement checkbox = input.findElement(By.tagName("input"));
+            final WebElement description = input.findElement(By.tagName("span"));
+            return new TodoItem(description.getText(), checkbox.isSelected());
+        }).collect(Collectors.toList());
+    }
+
+    public void archive() {  archive.click(); }
+
+    public void add(String todo) {
+        todoEntry.sendKeys(todo);
+        addTodo.submit();
+    }
+}
+
+----
+
+[.source.topic.code-small]
+== TodoTest.java
+
+[source, java]
+----
+@RunWith(Arquillian.class)
+@RunAsClient
+public class TodoTest {
+
+  @Deployment
+  public static WebArchive createDeployment() {
+      return Deployments.createFullAppDeployment();
+  }
+
+  @Drone private WebDriver browser;
+
+  @ArquillianResource private URL contextRoot;
+
+  @Page private TodoListPageObject todoList;
+
+  @Before public void loadPage() {
+      browser.navigate().to(contextRoot + "index.html");
+  }
+
+  @Test public void should_have_two_items_on_todo_list_when_started() {
+      assertThat(todoList.openTasks()).hasSize(2);
+  }
+
+  @Test public void should_archive_item_which_is_selected_by_default() {
+    todoList.archive();
+
+    assertThat(todoList.openTasks()).hasSize(1);
+  }
+}
+----
+
+[.topic.intro]
+== *Demo* time
+
+[.icon]
+== Arquillian QUnit extension
+
+[ {caption-off}]
+image::qu.png[]
+
+* {point-label} _Automates_ QUnit JavaScript testing
+* {point-label} Integrates with _JUnit_
+* {point-label} _Mix_ Java code with JavaScript
+
+[.source.topic]
+== pom.xml
+
+[source, xml]
+----
+<dependency>
+    <groupId>org.jboss.arquillian.extension</groupId>
+    <artifactId>arquillian-qunit</artifactId>
+    <version>${project.version}</version>
+    <scope>test</scope>
+</dependency>
+----
+
+
+[.code-small.topic]
+== qunit-assertions.html
+
+[source, html]
+----
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery/jquery-1.8.2.min.js"></script> <!--1-->
+    <script type="text/javascript" src="../../qunit/qunit.js"></script> <!--2-->
+    <script type="text/javascript" src="assert.js"></script> <!--3-->
+  </head>
+  <body>
+    <h1 id="qunit-header">QUnit Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+  </body>
+</html>
+----
+<1> Dependencies
+<2> QUnit
+<3> QUnit test file
+
+[.code-small.topic]
+== assert.js
+
+[source, javascript]
+----
+base = [ "http://", window.location.host, "/rest-service/" ].join("");
+
+module('Ajax calls');
+
+test('Read cars', function() { //<1>
+    expect(4);
+    stop();
+    $.ajax({
+        url : (base + "rest/carservice/cars")
+    }).done(function(data) { //<2>
+      ok(data.length === 1, "Cars received");
+      ok(data[0].color === "Black", "Color is black");
+      ok(data[0].numberFrame === "QWE123", "Number Frame is QWE123");
+      ok(data[0].model === "Model_1", "Model is Model_1");
+        start();
+    })
+});
+----
+<1> QUnit test definition
+<2> Assertions
+
+[.code-small, topic]
+== CarServiceTest.java
+
+[source, java]
+----
+@RunWith(QUnitRunner.class)
+@QUnitResources("src/test/resources/assets") //<1>
+public class QUnitRunnerTestCase {
+
+    @Deployment
+    public static Archive<?> createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "rest-service.war")
+                .addClasses(Car.class, CarService.class, CarRepository.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
+
+    @QUnitTest("tests/rest-service/qunit-assertions.html") //<2>
+    @InSequence(1)
+    public void qunitAjaxTest() {
+        // empty body - only the annotations are used
+    }
+----
+<1> Location of QUnit resources
+<2> Location of test inside QUnit resources
+
+== !
+
+[.canvas.relax-x.middle, {caption-off}]
+image::eclipse.png[]
+
+//1042x688
+[.imglandscape]
+== _Arquillian Cube_
+
+[{caption-off}]
+image::BorgFirstContact.jpg[]
+
+//709x857
+[.bannerleft]
+== What is _Arquillian Cube_
+
+[ {caption-off}]
+image::LocutusOfBorg.jpg[]
+
+* {point-label} manages lifecycle of _docker_ containers
+* {point-label} uses _Arquillian_ remote adapters
+* {point-label} orchestrate containers
+* {point-label} containerless (Netty, NodeJs, Spring Boot)
+* {point-label} ready for _boot2docker_
+
+== !
+
+[{caption-off}, hrole="name"]
+.github.com/lordofthejars/decks
+image::github.jpg[]
+
+[.topic.ending, hrole="name"]
+== Alex Soto
+[.footer]
+icon:twitter[] @alexsotob
