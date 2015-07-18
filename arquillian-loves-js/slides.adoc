@@ -131,7 +131,7 @@ image::6_disconnect_container.png[]
     <dependency>
       <groupId>org.jboss.arquillian</groupId>
       <artifactId>arquillian-bom</artifactId>
-      <version>1.1.7.Final</version>
+      <version>1.1.8.Final</version>
       <scope>import</scope>
       <type>pom</type> <!--1-->
     </dependency>
@@ -289,7 +289,7 @@ assertThat(welcomeMessage.getText(), is("Welcome"));
 ----
 
 [.icon]
-== Arquillian _Drone_/_Graphene_
+== Arquillian _Drone_/_Graphene_ extension
 
 [ {caption-off}]
 image::drone.png[]
